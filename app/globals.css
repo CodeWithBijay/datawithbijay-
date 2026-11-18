@@ -576,3 +576,7 @@ header.site.g-hide{transform:translateY(calc(-100% - 20px))}
 
 /* keep the navigation bar on screen at all times */
 header.site,header.site.g-hide{transform:none !important}
+
+/* hero: no forced full-screen height, so no empty gap under the roles button */
+.hero2{min-height:0 !important;padding-bottom:48px !important}
+@media (max-width:900px){.hero2{padding-bottom:36px !important}}
