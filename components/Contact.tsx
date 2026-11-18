@@ -9,7 +9,7 @@ export default function Contact() {
     <p>Have a role, a messy dataset or a pipeline that keeps breaking? I’d like to hear about it.</p>
     <div className="btns">
       <a className="btn solid" href="https://www.linkedin.com/in/b-paudel/" target="_blank" rel="noopener">message on LinkedIn ↗</a>
-      <a className="btn ghost" href="resume.pdf" target="_blank" rel="noopener">download résumé</a>
+      <a className="btn ghost" href="/resume.pdf" target="_blank" rel="noopener">download résumé</a>
     </div>
     </div>
     <div className="cf-wrap">
@@ -47,7 +47,7 @@ export default function Contact() {
   <div className="contacts reveal">
     <a href="https://github.com/CodeWithBijay" target="_blank" rel="noopener"><div className="k">GitHub</div><div className="v">CodeWithBijay</div></a>
     <a href="https://www.linkedin.com/in/b-paudel/" target="_blank" rel="noopener"><div className="k">LinkedIn</div><div className="v">in/b-paudel</div></a>
-    <a href="resume.pdf" target="_blank" rel="noopener"><div className="k">Résumé</div><div className="v">resume.pdf</div></a>
+    <a href="/resume.pdf" target="_blank" rel="noopener"><div className="k">Résumé</div><div className="v">resume.pdf</div></a>
     <div><div className="k">Location</div><div className="v">United States</div></div>
   </div>
     </>

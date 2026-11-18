@@ -1,14 +1,32 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
+const SITE = "https://www.bijay-paudel.com.np";
+const TITLE = "Bijay Paudel — Analytics Engineer";
+const DESC = "Analytics engineer building reliable data pipelines and clean, tested data models with SQL, Python, PostgreSQL and Microsoft Fabric."; // 133 characters
+
 export const metadata: Metadata = {
-  title: "Bijay Paudel — Analytics Engineer",
-  description:
-    "Bijay Paudel is an analytics engineer in the USA building reliable data pipelines and clean, tested data models with SQL, Python, PostgreSQL and Microsoft Fabric.",
+  metadataBase: new URL(SITE),
+  title: TITLE,
+  description: DESC,
+  alternates: { canonical: "/" },
+  authors: [{ name: "Bijay Paudel", url: SITE }],
+  keywords: ["Bijay Paudel", "analytics engineer", "data engineer", "SQL", "Python", "PostgreSQL", "Microsoft Fabric", "portfolio"],
+  robots: { index: true, follow: true },
   openGraph: {
-    title: "Bijay Paudel — Analytics Engineer",
-    description: "Reliable data pipelines and clean, tested data models. DataWithBijay.",
     type: "website",
+    url: "/",
+    siteName: "DataWithBijay",
+    title: TITLE,
+    description: DESC,
+    locale: "en_US",
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Bijay Paudel — Analytics Engineer · DataWithBijay" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESC,
+    images: ["/og.png"],
   },
 };
 
