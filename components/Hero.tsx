@@ -28,6 +28,7 @@ export default function Hero() {
       <div className="geo">
         <div className="coord">38.6270° N · 90.1994° W</div>
         <div><b id="clock">--:--:--</b> <span id="tz">UTC−6</span></div>
+        <div className="bg-note" id="bgStat"></div>
       </div>
     </div>
   </div>

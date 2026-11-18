@@ -4,7 +4,7 @@ export default function Background() {
     <>
 <canvas id="bg" aria-hidden="true"></canvas>
 <div id="bgTip" role="tooltip"></div>
-<div className="bg-note" id="bgStat"></div>
+
 
     </>
   );

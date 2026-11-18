@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>DataWithBijay</title>
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="#0f1823" stroke="#5eead4" stroke-width="3"/>
+  <g fill="none" stroke="#e6edf6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17 18V46M17 18H25a7 7 0 0 1 0 14H17M17 32H26a7 7 0 0 1 0 14H17"/>
+    <path d="M38 46V18H44a7 7 0 0 1 0 14H38"/>
+  </g>
+  <circle cx="51" cy="45" r="4.5" fill="#5eead4"/>
+</svg>
