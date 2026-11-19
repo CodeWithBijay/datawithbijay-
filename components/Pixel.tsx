@@ -12,7 +12,7 @@ export default function Pixel() {
     </div>
     <div className="px-log" id="pxLog" aria-live="polite"></div>
     <div className="px-quick" id="pxQuick">
-      <button>What does Bijay do?</button><button>Tell me about the fraud project</button><button>What is his tech stack?</button><button>Is he open to roles?</button>
+      <button>What does Bijay do?</button><button>Tell me about the fraud project</button><button>What is his tech stack?</button><button>Is he open to roles?</button><button>Does he need sponsorship?</button>
     </div>
     <form className="px-form" id="pxForm"><input id="pxIn" autoComplete="off" maxLength={400} placeholder="Ask about Bijay…" aria-label="Your question" /><button aria-label="Send">➤</button></form>
   </div>
