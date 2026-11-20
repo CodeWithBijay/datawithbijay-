@@ -406,3 +406,5 @@ footer{border-top:1.5px solid var(--ln2);padding:36px 0 50px}
   .ent{grid-template-columns:1fr}.ent .rev,.ent .when{border-right:0;padding-bottom:0}}
 
 .fsub small.ok{color:var(--mint)}.fsub small.err{color:var(--red)}.fld.bad{background:rgba(248,113,113,.08)}.fld.bad label{color:var(--red)}
+
+.role .tw{white-space:pre}.role .twc{display:inline-block;width:3px;height:1.05em;margin-left:3px;background:var(--mint);vertical-align:-.12em;animation:ldrp 1s steps(2) infinite}
