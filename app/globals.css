@@ -88,7 +88,7 @@ svg text{font-family:var(--mono)}
 @media (max-width:560px){.open-pill{padding:10px 15px;font-size:10px;letter-spacing:.11em}}
 /* Pixel — data cube bot */
 #pixel,.px-form-bot,.px-flyer{--line:var(--ln2);--line-2:var(--ln3);--text:#c9dcee;--muted:var(--mut);--head:var(--ink);--sans:Inter,system-ui,sans-serif}
-#pixel{position:fixed;right:18px;bottom:14px;z-index:80;display:flex;flex-direction:column;align-items:flex-end;gap:8px;font-family:var(--mono)}
+#pixel{position:fixed;right:30px;bottom:22px;z-index:80;display:flex;flex-direction:column;align-items:flex-end;gap:8px;font-family:var(--mono)}
 .px-bot{background:none;border:0;padding:0;cursor:pointer;transition:transform .2s}
 .px-bot:hover{transform:translateY(-3px) scale(1.04)}
 #pixel.open .px-bot{transform:scale(.8);transform-origin:bottom right}
@@ -128,7 +128,7 @@ svg text{font-family:var(--mono)}
 .px-form button{background:none;border:0;border-left:1px solid var(--line);color:var(--sky);padding:0 16px;cursor:pointer;font-size:14px}
 .px-form button:hover{background:rgba(125,211,252,.1)}
 @media (prefers-reduced-motion:reduce){.px-float,.px-sh,.px-eyes,.px-wave,.px-ant,.px-led{animation:none}}
-@media (max-width:560px){#pixel{right:10px;bottom:8px}.px-bot svg{width:66px;height:61px}.px-chat{width:calc(100vw - 20px);height:min(70vh,520px)}}
+@media (max-width:560px){#pixel{right:14px;bottom:12px}.px-bot svg{width:66px;height:61px}.px-chat{width:calc(100vw - 20px);height:min(70vh,520px)}}
 
 /* ---------- Pixel peeks + contact form ---------- */
 #pixel .px-bot{position:relative;transform:translateY(130%);transition:transform .75s cubic-bezier(.34,1.5,.64,1)}
@@ -136,7 +136,7 @@ svg text{font-family:var(--mono)}
 #pixel.open .px-bot{transform:scale(.8);transform-origin:bottom right}
 #pixel.px-away .px-bot{visibility:hidden;transition:none}
 #pixel .px-bot:hover{transform:translateY(-3px)}
-.px-cloud{position:absolute;right:58px;bottom:66px;white-space:nowrap;padding:7px 13px;background:#071a2c;border:1.5px solid var(--sky);border-radius:4px;
+.px-cloud{position:absolute;right:64px;bottom:56px;white-space:nowrap;padding:7px 13px;background:#071a2c;border:1.5px solid var(--sky);border-radius:4px;
   font:500 15px var(--display,'Space Grotesk'),var(--mono);color:var(--head);pointer-events:auto;cursor:pointer;opacity:0;transform:scale(.4) translateY(10px);transform-origin:90% 100%;transition:opacity .25s,transform .35s cubic-bezier(.34,1.6,.64,1)}
 .px-cloud b{color:var(--sky);font-weight:500}
 .px-cloud::after{content:"";position:absolute;right:6px;bottom:-11px;width:8px;height:8px;border-radius:50%;background:#071a2c;border:1.5px solid var(--sky)}
