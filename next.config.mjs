@@ -2,14 +2,14 @@
 
 // Security headers (fixes: cross-site scripting defence, click-jacking defence, MIME sniffing).
 // The Content-Security-Policy lists every outside service the site really uses:
-// Google Fonts, CelesTrak (space-station orbits), the GitHub API (Activity numbers) and Pageclip (contact form).
+// Google Fonts, the GitHub API and Pageclip (contact form).
 const csp = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline'" + (process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""),
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com",
   "img-src 'self' data: blob:",
-  "connect-src 'self' https://celestrak.org https://api.github.com https://send.pageclip.co",
+  "connect-src 'self' https://api.github.com https://send.pageclip.co",
   "form-action 'self' https://send.pageclip.co",
   "frame-ancestors 'none'",
   "base-uri 'self'",
