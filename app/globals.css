@@ -482,3 +482,7 @@ figcaption{display:flex;justify-content:space-between;gap:10px;margin-top:9px;fo
 .nf-l a{display:flex;justify-content:space-between;padding:10px 12px;border:1px solid var(--ln3);color:var(--ink);font-size:14px;text-decoration:none;transition:border-color .2s,color .2s}
 .nf-l a:hover{border-color:var(--mint);color:var(--mint)}.nf-l a span{color:var(--dim)}
 @media (max-width:560px){.nf-l{grid-template-columns:1fr 1fr}}
+
+/* Pixel typing caret */
+.px-cur{display:inline-block;width:7px;height:1.05em;margin-left:2px;vertical-align:-.15em;background:var(--mint);animation:ldrp .9s steps(2) infinite}
+.px-msg.bot{cursor:default}
