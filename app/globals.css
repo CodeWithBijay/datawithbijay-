@@ -572,6 +572,8 @@ body.chat-on #tally .tl-ping i{animation-duration:2.4s}
 .px-acts a:hover,.px-acts button:hover{background:rgba(94,234,212,.18)}
 .px-snd{position:absolute;top:11px;right:38px;background:none;border:0;color:var(--dim);cursor:pointer;padding:2px;line-height:0}
 .px-snd:hover,.px-snd[aria-pressed="true"]{color:var(--sky)}
+.px-voice{position:absolute;top:11px;right:62px;background:none;border:0;color:var(--dim);cursor:pointer;padding:2px;line-height:0}
+.px-voice:hover,.px-voice[aria-pressed="true"]{color:var(--mint,#5eead4)}
 .px-inl{margin-top:8px;background:none;border:1px solid var(--sky);color:var(--sky);font:11px var(--mono);padding:5px 9px;border-radius:3px;cursor:pointer}
 .px-inl:hover{background:rgba(125,211,252,.12)}
 
