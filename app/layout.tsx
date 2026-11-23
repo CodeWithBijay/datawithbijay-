@@ -14,6 +14,17 @@ export const metadata: Metadata = {
   authors: [{ name: "Bijay Paudel", url: SITE }],
   keywords: ["Bijay Paudel", "data analyst", "analytics engineer", "data engineer", "SQL", "Python", "PostgreSQL", "Microsoft Fabric", "portfolio"],
   robots: { index: true, follow: true },
+  // Site icon for browser tabs and Google results. Fixed addresses (no build hash) and true sizes:
+  // Google needs a square icon of at least 48×48 linked from the homepage.
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+  },
+  manifest: "/manifest.webmanifest",
   other: { "tdm-reservation": "1" },
   // Google Search Console: set GOOGLE_SITE_VERIFICATION in Vercel → Settings → Environment Variables
   ...(process.env.GOOGLE_SITE_VERIFICATION ? { verification: { google: process.env.GOOGLE_SITE_VERIFICATION } } : {}),

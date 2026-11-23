@@ -18,5 +18,5 @@ export function middleware(req: NextRequest) {
 
 export const config = {
   // every page except Next's static files and robots.txt
-  matcher: ["/((?!_next/static|_next/image|robots.txt|favicon.ico|icon.svg|apple-icon.png).*)"],
+  matcher: ["/((?!_next/static|_next/image|robots.txt|favicon.ico|icon.svg|icon-192.png|icon-512.png|apple-touch-icon.png|manifest.webmanifest).*)"],
 };
