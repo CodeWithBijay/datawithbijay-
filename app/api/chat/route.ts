@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { FACTS, RULES, JD_RULES } from "@/lib/pixelBrain";
 import { db } from "@/lib/db";
 
+// Tally's answers. Newer Gemini models spend part of maxOutputTokens on hidden "thinking", so the limit is generous;
+// the RULES keep the visible answer short.
 // Tally's answers. The Gemini key stays on the server (GEMINI_API_KEY in .env.local / your host's settings).
 // If the key is missing or Gemini fails, the browser falls back to Tally's built-in answers.
 
@@ -57,7 +59,7 @@ export async function POST(req: Request) {
     const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-      body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: prompt }] }], generationConfig: { maxOutputTokens: mode === "jd" ? 1200 : 300, temperature: 0.4 } }),
+      body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: prompt }] }], generationConfig: { maxOutputTokens: mode === "jd" ? 4096 : 2048, temperature: 0.4 } }),
       signal: AbortSignal.timeout(25_000),
     });
     await logged;
