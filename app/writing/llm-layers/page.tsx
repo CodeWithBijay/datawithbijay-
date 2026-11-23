@@ -22,6 +22,24 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title, description, images: ["/og-llm-layers.png"] },
 };
 
+const ARTICLE = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: title,
+  description,
+  image: "https://www.bijay-paudel.com.np/og-llm-layers.png",
+  url: "https://www.bijay-paudel.com.np/writing/llm-layers",
+  mainEntityOfPage: "https://www.bijay-paudel.com.np/writing/llm-layers",
+  author: { "@id": "https://www.bijay-paudel.com.np/#person", "@type": "Person", name: "Bijay Paudel" },
+  publisher: { "@id": "https://www.bijay-paudel.com.np/#person" },
+  inLanguage: "en-US",
+};
+
 export default function Page() {
-  return <Site />;
+  return (
+    <>
+      <Site />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ARTICLE) }} />
+    </>
+  );
 }
