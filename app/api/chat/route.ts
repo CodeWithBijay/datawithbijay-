@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { FACTS, RULES } from "@/lib/pixelBrain";
 
-// Pixel's answers. The Gemini key stays on the server (GEMINI_API_KEY in .env.local / your host's settings).
-// If the key is missing or Gemini fails, the browser falls back to Pixel's built-in answers.
+// Spidy's answers. The Gemini key stays on the server (GEMINI_API_KEY in .env.local / your host's settings).
+// If the key is missing or Gemini fails, the browser falls back to Spidy's built-in answers.
 
 const MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 const hits = new Map<string, number[]>(); // tiny per-IP limit: 20 questions / 10 min
@@ -27,8 +27,8 @@ export async function POST(req: Request) {
     ? (body.history as Turn[]).slice(-8).filter((t) => t && typeof t.text === "string").map((t) => ({ role: t.role === "pixel" ? "pixel" : "visitor", text: t.text.slice(0, 600) }))
     : [];
 
-  const convo = history.map((t) => (t.role === "visitor" ? "Visitor: " : "Pixel: ") + t.text).join("\n");
-  const prompt = `${RULES}\n\nFACTS:\n${FACTS}\n\n${convo ? "CONVERSATION SO FAR:\n" + convo + "\n\n" : ""}Visitor: ${question}\nPixel:`;
+  const convo = history.map((t) => (t.role === "visitor" ? "Visitor: " : "Spidy: ") + t.text).join("\n");
+  const prompt = `${RULES}\n\nFACTS:\n${FACTS}\n\n${convo ? "CONVERSATION SO FAR:\n" + convo + "\n\n" : ""}Visitor: ${question}\nSpidy:`;
 
   try {
     const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
