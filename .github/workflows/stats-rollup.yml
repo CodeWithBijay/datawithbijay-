@@ -1,0 +1,23 @@
+# Nightly data pipeline for the /stats page:
+#   raw.pageviews  →  reporting.daily_*   (db/rollup.sql)
+# Runs at 2:15 AM Central (08:15 UTC) and can be run by hand from the Actions tab.
+name: Stats rollup
+
+on:
+  schedule:
+    - cron: "15 8 * * *"
+  workflow_dispatch:
+
+jobs:
+  rollup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Roll up yesterday's page views
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          TRIGGER: ${{ github.event_name == 'schedule' && 'schedule' || 'manual' }}
+        run: psql "$DATABASE_URL" -v trigger="$TRIGGER" -f db/rollup.sql
+      - name: Refresh the /stats page
+        run: curl -fsS -o /dev/null https://www.bijay-paudel.com.np/stats || true
