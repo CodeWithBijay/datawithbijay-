@@ -14,6 +14,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Bijay Paudel", url: SITE }],
   keywords: ["Bijay Paudel", "data analyst", "analytics engineer", "data engineer", "SQL", "Python", "PostgreSQL", "Microsoft Fabric", "portfolio"],
   robots: { index: true, follow: true },
+  other: { "tdm-reservation": "1" },
   // Google Search Console: set GOOGLE_SITE_VERIFICATION in Vercel → Settings → Environment Variables
   ...(process.env.GOOGLE_SITE_VERIFICATION ? { verification: { google: process.env.GOOGLE_SITE_VERIFICATION } } : {}),
   openGraph: {

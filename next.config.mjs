@@ -24,6 +24,9 @@ const securityHeaders = [
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), browsing-topics=()" },
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+  // Not for AI training: "noai" tags plus the W3C text-and-data-mining reservation
+  { key: "X-Robots-Tag", value: "noai, noimageai" },
+  { key: "tdm-reservation", value: "1" },
 ];
 
 const nextConfig = {
