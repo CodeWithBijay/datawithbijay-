@@ -88,7 +88,7 @@ svg text{font-family:var(--mono)}
 @media (max-width:560px){.open-pill{padding:10px 15px;font-size:10px;letter-spacing:.11em}}
 /* Pixel — data cube bot */
 #pixel,.px-form-bot,.px-flyer{--line:var(--ln2);--line-2:var(--ln3);--text:#c9dcee;--muted:var(--mut);--head:var(--ink);--sans:Inter,system-ui,sans-serif}
-#pixel{position:fixed;right:30px;bottom:22px;z-index:80;display:flex;flex-direction:column;align-items:flex-end;gap:8px;font-family:var(--mono)}
+#pixel{position:fixed;right:30px;bottom:22px;z-index:94;display:flex;flex-direction:column;align-items:flex-end;gap:8px;font-family:var(--mono)}
 .px-bot{background:none;border:0;padding:0;cursor:pointer;transition:transform .2s}
 .px-bot:hover{transform:translateY(-3px) scale(1.04)}
 #pixel.open .px-bot{transform:scale(.8);transform-origin:bottom right}
@@ -522,11 +522,11 @@ figcaption{display:flex;justify-content:space-between;gap:10px;margin-top:9px;fo
 
 /* old Pixel button stays hidden; Tally opens the chat */
 #pxBot,.px-form-bot,.px-flyer,#pxCloud,#pxGreet{display:none!important}
-#pixel #pxChat{position:fixed;right:auto;bottom:auto;z-index:80}
+#pixel #pxChat{position:fixed;right:auto;bottom:auto;z-index:94}
 
 
 /* Tally: the robot assistant (replaces Spidy). Robot art from the user's stock file, recoloured to the site theme. */
-#tally{position:fixed;left:0;top:0;width:70px;height:86px;margin-left:-35px;z-index:81;cursor:pointer;transform-origin:35px 81px;-webkit-tap-highlight-color:transparent}
+#tally{position:fixed;left:0;top:0;width:70px;height:86px;margin-left:-35px;z-index:95;cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none;transform-origin:35px 81px;-webkit-tap-highlight-color:transparent}
 #tally .tl-pose{position:absolute;left:0;top:0;width:70px;height:78px;opacity:0;transition:opacity .18s;pointer-events:none;user-select:none;-webkit-user-drag:none}
 #tally .tl-pose.on{opacity:1}
 #tally .tl-face{position:absolute;left:8.75px;top:8.40px;width:47.29px;height:32.12px;overflow:visible;pointer-events:none}
@@ -554,4 +554,27 @@ body.chat-on #tally .tl-ping i{animation-duration:2.4s}
 #tally.sleep .tl-ping i{animation-duration:7s}#tally.burst .tl-ping i{animation-duration:.9s!important}
 @media (prefers-reduced-motion:reduce){#tally .tl-zz span{animation:none;opacity:1}}
 
+/* Tally extras: wide bubble, outfits, dizzy stars, drag, chat quick actions, sound toggle */
+.tl-bub.wide{white-space:normal;width:230px;line-height:1.45}
+#tally .tl-hat{position:absolute;left:0;top:-19px;width:70px;height:30px;pointer-events:none;overflow:visible}
+#tally .tl-mug{position:absolute;left:54px;top:46px;width:22px;height:22px;pointer-events:none}
+#tally .tl-steam path{animation:tlSteam 2.2s ease-in-out infinite}#tally .tl-steam path+path{animation-delay:.6s}
+@keyframes tlSteam{0%,100%{opacity:.2;transform:translateY(1px)}50%{opacity:1;transform:translateY(-1px)}}
+#tally .tl-stars{position:absolute;left:35px;top:-2px;width:0;height:0;opacity:0;transition:opacity .2s;pointer-events:none}
+#tally.hat .tl-stars{top:-14px}
+#tally.dizzy .tl-stars{opacity:1}
+#tally .tl-stars span{position:absolute;left:-5px;top:-7px;font-size:11px;color:#f59e0b;animation:tlOrbit 1s linear infinite}
+#tally .tl-stars span:nth-child(2){animation-delay:-.33s;color:#5eead4}#tally .tl-stars span:nth-child(3){animation-delay:-.66s;color:#7dd3fc}
+@keyframes tlOrbit{from{transform:rotate(0) translateX(24px) rotate(0) scaleY(1)}to{transform:rotate(360deg) translateX(24px) rotate(-360deg)}}
+#tally.drag{cursor:grabbing}#tally.drag .tl-shadow{opacity:.2!important}
+.px-acts{display:flex;flex-wrap:wrap;gap:6px;padding:10px 14px 8px;border-top:1px solid var(--line)}
+.px-acts a,.px-acts button{background:rgba(94,234,212,.08);border:1px solid rgba(94,234,212,.35);color:var(--mint,#5eead4);font:11px var(--mono);padding:5px 9px;border-radius:3px;cursor:pointer;text-decoration:none;line-height:1.2}
+.px-acts a:hover,.px-acts button:hover{background:rgba(94,234,212,.18)}
+.px-snd{position:absolute;top:11px;right:38px;background:none;border:0;color:var(--dim);cursor:pointer;padding:2px;line-height:0}
+.px-snd:hover,.px-snd[aria-pressed="true"]{color:var(--sky)}
+.px-inl{margin-top:8px;background:none;border:1px solid var(--sky);color:var(--sky);font:11px var(--mono);padding:5px 9px;border-radius:3px;cursor:pointer}
+.px-inl:hover{background:rgba(125,211,252,.12)}
+
+.st-note{margin:10px 0 0;color:var(--dim);font:11px/1.6 var(--mono)}
+@media (prefers-reduced-motion:reduce){#tally .tl-stars span,#tally .tl-steam path{animation:none}}
 @media print{#tally{display:none}}

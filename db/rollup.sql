@@ -46,8 +46,18 @@ GROUP BY day, source;
 INSERT INTO reporting.daily_countries SELECT day, COALESCE(country, 'Unknown'), COUNT(DISTINCT visitor_id) FROM w GROUP BY 1, 2;
 INSERT INTO reporting.daily_devices   SELECT day, COALESCE(device, 'unknown'),  COUNT(DISTINCT visitor_id) FROM w GROUP BY 1, 2;
 
+-- what visitors ask Tally
+DELETE FROM reporting.daily_topics WHERE day >= (now() AT TIME ZONE 'America/Chicago')::date - 3;
+INSERT INTO reporting.daily_topics
+SELECT (ts AT TIME ZONE 'America/Chicago')::date, topic, COUNT(*)
+FROM raw.chat_questions
+WHERE ts >= (((now() AT TIME ZONE 'America/Chicago')::date - 3)::timestamp AT TIME ZONE 'America/Chicago')
+  AND ts <  (((now() AT TIME ZONE 'America/Chicago')::date)::timestamp     AT TIME ZONE 'America/Chicago')
+GROUP BY 1, 2;
+
 -- keep raw events for 90 days only
 DELETE FROM raw.pageviews WHERE ts < now() - interval '90 days';
+DELETE FROM raw.chat_questions WHERE ts < now() - interval '90 days';
 
 UPDATE ops.pipeline_runs
    SET finished_at = now(), status = 'success',

@@ -40,7 +40,9 @@ async function load() {
       db`SELECT status, finished_at, started_at, raw_rows, days_built, triggered_by FROM ops.pipeline_runs ORDER BY id DESC LIMIT 1`,
       db`SELECT MIN(ts) t, COUNT(*) total FROM raw.pageviews`,
     ]);
-    return { kpi: kpi[0], series, pages, sources, countries, devices, today: today[0], run: run[0] as Row | undefined, since: since[0] };
+    // topics may not exist yet on an older database, so this one can fail on its own
+    const topics = await db`SELECT topic, SUM(questions) v FROM reporting.daily_topics WHERE day > (now() AT TIME ZONE ${CT})::date - 30 GROUP BY topic ORDER BY v DESC LIMIT 8`.catch(() => []);
+    return { topics, kpi: kpi[0], series, pages, sources, countries, devices, today: today[0], run: run[0] as Row | undefined, since: since[0] };
   } catch {
     return null;
   }
@@ -144,6 +146,12 @@ export default async function Stats() {
                 </>
               ) : <p className="st-empty">No data yet</p>}
             </div>
+          </div>
+
+          <div className="st-box">
+            <div className="st-h"><span>WHAT VISITORS ASK TALLY · 30 DAYS</span><span>daily_topics</span></div>
+            <Bars rows={d.topics} label="topic" value="v" />
+            <p className="st-note">Tally, the robot on every page, logs only the topic of each question (never the text) into raw.chat_questions.</p>
           </div>
 
           <p className="st-foot">
