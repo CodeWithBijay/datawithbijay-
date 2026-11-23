@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 const SITE = "https://www.bijay-paudel.com.np";
-const TITLE = "Bijay Paudel — Analytics Engineer";
-const DESC = "Analytics engineer building reliable data pipelines and clean, tested data models with SQL, Python, PostgreSQL and Microsoft Fabric."; // 133 characters
+const TITLE = "Bijay Paudel — Data Analyst & Analytics Engineer";
+const DESC = "Data analyst and analytics engineer who turns messy data into clear answers and builds the pipelines behind them with SQL, Python and Power BI.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description: DESC,
   alternates: { canonical: "/" },
   authors: [{ name: "Bijay Paudel", url: SITE }],
-  keywords: ["Bijay Paudel", "analytics engineer", "data engineer", "SQL", "Python", "PostgreSQL", "Microsoft Fabric", "portfolio"],
+  keywords: ["Bijay Paudel", "data analyst", "analytics engineer", "data engineer", "SQL", "Python", "PostgreSQL", "Microsoft Fabric", "portfolio"],
   robots: { index: true, follow: true },
   openGraph: {
     type: "website",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     title: TITLE,
     description: DESC,
     locale: "en_US",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Bijay Paudel — Analytics Engineer · DataWithBijay" }],
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Bijay Paudel — Data Analyst & Analytics Engineer · DataWithBijay" }],
   },
   twitter: {
     card: "summary_large_image",
