@@ -520,17 +520,38 @@ figcaption{display:flex;justify-content:space-between;gap:10px;margin-top:9px;fo
 
 .loc a.stl{color:var(--mint);text-decoration:none}.loc a.stl:hover{text-decoration:underline}
 
-/* Spidy: hanging spider assistant (replaces the Pixel cube) */
+/* old Pixel button stays hidden; Tally opens the chat */
 #pxBot,.px-form-bot,.px-flyer,#pxCloud,#pxGreet{display:none!important}
-#spidy{position:fixed;left:0;top:0;width:112px;height:128px;margin:-16px 0 0 -56px;z-index:81;cursor:pointer;transform-origin:56px 110px;-webkit-tap-highlight-color:transparent}
-#spidy.bub-r .sp-bub{right:auto;left:92px}
-#spidy.bub-r .sp-bub:after{right:auto;left:-6px;transform:rotate(-135deg)}
-#spidy svg{display:block;overflow:visible}
-#spidy:focus-visible{outline:2px solid var(--mint);outline-offset:4px}
-.sp-bub{position:absolute;right:92px;top:30px;white-space:nowrap;padding:8px 12px;background:rgba(7,26,44,.97);border:1px solid var(--ln3);font:500 12.5px var(--mono);color:var(--ink);opacity:0;transform:translateX(6px);transition:opacity .25s,transform .25s;pointer-events:none}
-.sp-bub:after{content:"";position:absolute;right:-6px;top:12px;width:10px;height:10px;background:inherit;border-right:1px solid var(--ln3);border-top:1px solid var(--ln3);transform:rotate(45deg)}
-#spidy.talk .sp-bub,#spidy:hover .sp-bub{opacity:1;transform:none}
-body.sp-chat #spidy .sp-bub{opacity:0!important}
 #pixel #pxChat{position:fixed;right:auto;bottom:auto;z-index:80}
-@media (max-width:700px){.sp-bub{font-size:11.5px;padding:6px 10px}}
-@media print{#spidy{display:none}}
+
+
+/* Tally: the robot assistant (replaces Spidy). Robot art from the user's stock file, recoloured to the site theme. */
+#tally{position:fixed;left:0;top:0;width:70px;height:86px;margin-left:-35px;z-index:81;cursor:pointer;transform-origin:35px 81px;-webkit-tap-highlight-color:transparent}
+#tally .tl-pose{position:absolute;left:0;top:0;width:70px;height:78px;opacity:0;transition:opacity .18s;pointer-events:none;user-select:none;-webkit-user-drag:none}
+#tally .tl-pose.on{opacity:1}
+#tally .tl-face{position:absolute;left:8.75px;top:8.40px;width:47.29px;height:32.12px;overflow:visible;pointer-events:none}
+#tally .tl-face path{transition:d .25s}
+#tally .tl-shadow{position:absolute;left:17px;top:80px;width:36px;height:6px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.55),transparent);pointer-events:none}
+#tally:focus-visible{outline:2px solid var(--mint);outline-offset:4px}
+.tl-bub{position:absolute;right:68px;top:0;white-space:nowrap;padding:8px 12px;background:rgba(7,26,44,.97);border:1px solid var(--ln3);font:500 12.5px var(--mono);color:var(--ink);opacity:0;transform:translateX(6px);transition:opacity .25s,transform .25s;pointer-events:none}
+.tl-bub:after{content:"";position:absolute;right:-6px;top:12px;width:10px;height:10px;background:inherit;border-right:1px solid var(--ln3);border-top:1px solid var(--ln3);transform:rotate(45deg)}
+#tally.r .tl-bub{right:auto;left:68px}#tally.r .tl-bub:after{right:auto;left:-6px;transform:rotate(-135deg)}
+#tally.talk .tl-bub{opacity:1;transform:none}body.chat-on #tally .tl-bub{opacity:0!important}
+/* sonar ping behind the robot */
+#tally .tl-ping{position:absolute;left:35px;top:40px;width:0;height:0;pointer-events:none}
+#tally .tl-ping i{position:absolute;left:-30px;top:-30px;width:60px;height:60px;border-radius:50%;border:1.5px solid #5eead4;opacity:0;animation:tlSonar 3.6s cubic-bezier(.2,.6,.3,1) infinite}
+#tally .tl-ping i:nth-child(2){animation-delay:1.2s}#tally .tl-ping i:nth-child(3){animation-delay:2.4s}
+@keyframes tlSonar{0%{transform:scale(.55);opacity:0}12%{opacity:.55}100%{transform:scale(2.6);opacity:0}}
+#tally:hover .tl-ping i,#tally.happy .tl-ping i{animation-duration:1.8s}
+#tally:hover .tl-ping i:nth-child(2),#tally.happy .tl-ping i:nth-child(2){animation-delay:.6s}#tally:hover .tl-ping i:nth-child(3),#tally.happy .tl-ping i:nth-child(3){animation-delay:1.2s}
+#tally.sad .tl-ping i{border-color:#7dd3fc;animation-duration:5s}
+body.chat-on #tally .tl-ping i{animation-duration:2.4s}
+@media (prefers-reduced-motion:reduce){#tally .tl-ping{display:none}}
+#tally .tl-zz{position:absolute;left:52px;top:-6px;pointer-events:none;font:600 13px var(--mono);color:#7dd3fc;opacity:0;transition:opacity .4s}
+#tally.sleep .tl-zz{opacity:1}#tally .tl-zz span{position:absolute;left:0;top:0;opacity:0;animation:tlZz 2.4s ease-out infinite}
+#tally .tl-zz span:nth-child(2){animation-delay:.8s;font-size:11px}#tally .tl-zz span:nth-child(3){animation-delay:1.6s;font-size:9px}
+@keyframes tlZz{0%{transform:translate(0,10px);opacity:0}20%{opacity:1}100%{transform:translate(14px,-22px);opacity:0}}
+#tally.sleep .tl-ping i{animation-duration:7s}#tally.burst .tl-ping i{animation-duration:.9s!important}
+@media (prefers-reduced-motion:reduce){#tally .tl-zz span{animation:none;opacity:1}}
+
+@media print{#tally{display:none}}
