@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 // One entry per real address on the site. Every page renders the same Blueprint app;
 // these give each address its own title, description and share card.
-const OG = [{ url: "/og.png", width: 1200, height: 630, alt: "Bijay Paudel — Data Analyst & Analytics Engineer · DataWithBijay" }];
+const OG = [{ url: "/og-card.png", width: 1200, height: 630, alt: "Bijay Paudel — Data Analyst & Analytics Engineer · DataWithBijay" }];
 
 export const PAGES: Record<string, { title: string; description: string }> = {
   "/about": { title: "About", description: "How Bijay Paudel builds pipelines that carry data from where it is created to where decisions get made." },
@@ -25,6 +25,6 @@ export function meta(path: string): Metadata {
     description: p.description,
     alternates: { canonical: path },
     openGraph: { type: "website", url: path, siteName: "DataWithBijay", title, description: p.description, images: OG },
-    twitter: { card: "summary_large_image", title, description: p.description, images: ["/og.png"] },
+    twitter: { card: "summary_large_image", title, description: p.description, images: ["/og-card.png"] },
   };
 }

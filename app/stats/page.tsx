@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: `${title} · Bijay Paudel`,
   description,
   alternates: { canonical: "/stats" },
-  openGraph: { type: "website", url: "/stats", title, description, images: [{ url: "/og.png", width: 1200, height: 630 }] },
+  openGraph: { type: "website", url: "/stats", title, description, images: [{ url: "/og-card.png", width: 1200, height: 630 }] },
 };
 
 type Row = Record<string, unknown>;

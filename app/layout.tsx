@@ -35,13 +35,13 @@ export const metadata: Metadata = {
     title: TITLE,
     description: DESC,
     locale: "en_US",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Bijay Paudel — Data Analyst & Analytics Engineer · DataWithBijay" }],
+    images: [{ url: "/og-card.png", width: 1200, height: 630, alt: "Bijay Paudel — Data Analyst & Analytics Engineer · DataWithBijay" }],
   },
   twitter: {
     card: "summary_large_image",
     title: TITLE,
     description: DESC,
-    images: ["/og.png"],
+    images: ["/og-card.png"],
   },
 };
 
