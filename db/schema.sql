@@ -45,3 +45,13 @@ CREATE TABLE IF NOT EXISTS ops.pipeline_runs (
   days_built  int,
   triggered_by text
 );
+
+-- contact form backup copies (the email goes out through Resend; this keeps a copy if an email ever fails)
+CREATE TABLE IF NOT EXISTS raw.contact_messages (
+  id       bigserial PRIMARY KEY,
+  ts       timestamptz NOT NULL DEFAULT now(),
+  name     text NOT NULL,
+  email    text NOT NULL,
+  message  text NOT NULL,
+  emailed  boolean NOT NULL DEFAULT false
+);

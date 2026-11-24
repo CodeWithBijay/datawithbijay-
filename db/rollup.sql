@@ -58,6 +58,8 @@ GROUP BY 1, 2;
 -- keep raw events for 90 days only
 DELETE FROM raw.pageviews WHERE ts < now() - interval '90 days';
 DELETE FROM raw.chat_questions WHERE ts < now() - interval '90 days';
+-- contact form backups: keep one year
+DELETE FROM raw.contact_messages WHERE ts < now() - interval '365 days';
 
 UPDATE ops.pipeline_runs
    SET finished_at = now(), status = 'success',
