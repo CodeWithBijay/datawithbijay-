@@ -4,10 +4,12 @@ import { db } from "@/lib/db";
 
 // Tally's answers. Newer Gemini models spend part of maxOutputTokens on hidden "thinking", so the limit is generous;
 // the RULES keep the visible answer short.
-// Tally's answers. The Gemini key stays on the server (GEMINI_API_KEY in .env.local / your host's settings).
 // If the key is missing or Gemini fails, the browser falls back to Tally's built-in answers.
 
-const MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+const MODEL = process.env.GEMINI_MODEL || "gemini-3.5-flash";
+// backups when the main model is busy (set GEMINI_FALLBACKS="model-a,model-b" in Vercel to change them)
+const FALLBACKS = (process.env.GEMINI_FALLBACKS || "gemini-3.1-flash-lite,gemini-3.5-flash").split(",").map((s) => s.trim()).filter(Boolean);
+export const maxDuration = 60;
 const hits = new Map<string, number[]>(); // tiny per-IP limit: 20 questions / 10 min
 
 type Turn = { role: "visitor" | "pixel"; text: string };
@@ -55,21 +57,33 @@ export async function POST(req: Request) {
     ? `${JD_RULES}\n\nFACTS:\n${FACTS}\n\nJOB DESCRIPTION:\n${question}\n\nTally:`
     : `${RULES}\n\nFACTS:\n${FACTS}\n\n${convo ? "CONVERSATION SO FAR:\n" + convo + "\n\n" : ""}Visitor: ${question}\nTally:`;
 
-  try {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-      body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: prompt }] }], generationConfig: { maxOutputTokens: mode === "jd" ? 4096 : 2048, temperature: 0.4 } }),
-      signal: AbortSignal.timeout(25_000),
-    });
-    await logged;
-    if (!r.ok) return NextResponse.json({ error: "upstream " + r.status }, { status: 502 });
-    const data = await r.json();
-    const text: string = (data?.candidates?.[0]?.content?.parts || []).map((p: { text?: string }) => p.text || "").join("").trim();
-    if (!text) return NextResponse.json({ error: "empty answer" }, { status: 502 });
-    return NextResponse.json({ text });
-  } catch {
-    await logged;
-    return NextResponse.json({ error: "timeout" }, { status: 504 });
+  // Busy Gemini models answer 503/429/500. Try the main model, wait and try it once more, then use a lighter backup model.
+  const body2 = JSON.stringify({ contents: [{ role: "user", parts: [{ text: prompt }] }], generationConfig: { maxOutputTokens: mode === "jd" ? 4096 : 2048, temperature: 0.4 } });
+  const attempts = [MODEL, MODEL, ...FALLBACKS.filter((m) => m !== MODEL)];
+  let lastErr = "no answer";
+  for (let i = 0; i < attempts.length; i++) {
+    if (i > 0) await new Promise((res) => setTimeout(res, i === 1 ? 1200 : 300));
+    try {
+      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${attempts[i]}:generateContent`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-goog-api-key": key },
+        body: body2,
+        signal: AbortSignal.timeout(15_000),
+      });
+      if (!r.ok) {
+        lastErr = `upstream ${r.status} (${attempts[i]})`;
+        if (r.status === 503 || r.status === 429 || r.status === 500 || r.status === 404) continue; // busy or retired: try the next one
+        break;
+      }
+      const data = await r.json();
+      const text: string = (data?.candidates?.[0]?.content?.parts || []).filter((p: { thought?: boolean }) => !p.thought).map((p: { text?: string }) => p.text || "").join("").trim();
+      if (!text) { lastErr = `empty answer (${attempts[i]})`; continue; }
+      await logged;
+      return NextResponse.json({ text });
+    } catch {
+      lastErr = `timeout (${attempts[i]})`;
+    }
   }
+  await logged;
+  return NextResponse.json({ error: lastErr }, { status: 502 });
 }
