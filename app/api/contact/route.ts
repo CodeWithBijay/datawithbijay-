@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 // 1. Spam checks run here on the server (bots can't skip them).
 // 2. A backup copy is saved in Neon (raw.contact_messages), so nothing is lost if an email fails.
 // 3. Resend delivers the email to CONTACT_TO with Reply-To set to the visitor, so "Reply" answers them.
+// 4. The visitor gets a short "thanks, I got your message" email (set CONTACT_AUTOREPLY=off in Vercel to stop it).
 // Vercel settings: RESEND_API_KEY (required), CONTACT_TO and CONTACT_FROM (optional, defaults below).
 
 export const maxDuration = 30;
@@ -66,6 +67,29 @@ export async function POST(req: Request) {
       sent = r.ok;
       if (sent && saved && db) await db`UPDATE raw.contact_messages SET emailed = true WHERE id = (SELECT max(id) FROM raw.contact_messages WHERE email = ${email})`.catch(() => null);
     } catch { /* fall through */ }
+
+    // Confirmation to the visitor. It never repeats their message (so bots can't use it to send spam to strangers)
+    // and only goes out for messages that passed every spam check above.
+    if (sent && process.env.CONTACT_AUTOREPLY !== "off") {
+      const first = name.split(/\s+/)[0].replace(/[^\p{L}\p{N}'’-]/gu, "").slice(0, 40) || "there";
+      await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          from: FROM.replace(/^[^<]*</, "Bijay Paudel <").replace(/<website@/, "<hello@"),
+          to: [email],
+          reply_to: TO,
+          subject: "Thanks for your message · Bijay Paudel",
+          text: `Hi ${first},\n\nThanks for reaching out through my website. I got your message and will reply within a day or two.\n\nIf it's urgent, you can reply to this email directly.\n\nBijay Paudel\nData Analyst & Analytics Engineer\nhttps://www.bijay-paudel.com.np`,
+          html: `<div style="font:15px/1.6 -apple-system,Segoe UI,Arial,sans-serif;color:#0b2238;max-width:520px">
+<p>Hi ${esc(first)},</p>
+<p>Thanks for reaching out through my website. I got your message and will reply within a day or two.</p>
+<p>If it's urgent, you can reply to this email directly.</p>
+<p style="margin-top:22px">Bijay Paudel<br><span style="color:#64748b">Data Analyst &amp; Analytics Engineer</span><br><a href="https://www.bijay-paudel.com.np" style="color:#0f766e">bijay-paudel.com.np</a></p></div>`,
+        }),
+        signal: AbortSignal.timeout(8_000),
+      }).catch(() => null);
+    }
   }
 
   if (sent || saved) return ok();   // saved-but-not-emailed is still safe: it's in the database
