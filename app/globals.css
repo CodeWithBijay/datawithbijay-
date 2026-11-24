@@ -580,3 +580,6 @@ body.chat-on #tally .tl-ping i{animation-duration:2.4s}
 .st-note{margin:10px 0 0;color:var(--dim);font:11px/1.6 var(--mono)}
 @media (prefers-reduced-motion:reduce){#tally .tl-stars span,#tally .tl-steam path{animation:none}}
 @media print{#tally{display:none}}
+
+/* anti-spam trap field: off-screen for people, still "visible" to form bots */
+#contact-form .hp{position:absolute!important;left:-9999px!important;top:auto;width:1px;height:1px;overflow:hidden}

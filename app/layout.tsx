@@ -63,7 +63,6 @@ const PERSON = {
         { "@type": "CollegeOrUniversity", name: "Pokhara University" },
       ],
       knowsAbout: ["Data analysis", "Analytics engineering", "Data engineering", "SQL", "Python", "PostgreSQL", "Power BI", "Microsoft Fabric", "Statistics"],
-      email: "mailto:hello@bijay-paudel.com.np",
       sameAs: ["https://www.linkedin.com/in/b-paudel/", "https://github.com/CodeWithBijay"],
     },
     { "@type": "WebSite", "@id": `${SITE}/#website`, url: SITE, name: "DataWithBijay", publisher: { "@id": `${SITE}/#person` }, inLanguage: "en-US" },
