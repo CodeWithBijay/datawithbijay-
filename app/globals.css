@@ -4,9 +4,7 @@
   --mint:#5eead4;--sky:#7dd3fc;--amber:#fbbf24;--orange:#f59e0b;--blue:#60a5fa;--red:#f87171;
   --head:"Space Grotesk",sans-serif;--mono:"JetBrains Mono",monospace}
 *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:80px}html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font:15px/1.65 Inter,system-ui,sans-serif;
-  background-image:linear-gradient(var(--ln) 1px,transparent 1px),linear-gradient(90deg,var(--ln) 1px,transparent 1px),linear-gradient(var(--ln2) 1px,transparent 1px),linear-gradient(90deg,var(--ln2) 1px,transparent 1px);
-  background-size:24px 24px,24px 24px,120px 120px,120px 120px;background-attachment:fixed}
+body{background:var(--bg);color:var(--ink);font:15px/1.65 Inter,system-ui,sans-serif;}
 a{color:inherit;text-decoration:none}
 ::selection{background:var(--mint);color:#04211c}
 .note{position:fixed;left:14px;bottom:14px;z-index:55;max-width:300px;padding:7px 12px;border-radius:8px;background:var(--amber);color:#1a1405;font:500 11.5px/1.35 Inter;box-shadow:0 8px 20px -10px #000}
@@ -262,8 +260,7 @@ svg text{font-family:var(--mono)}
  #rs .rsec{padding:12px 0;break-inside:auto}#rs .rjob{break-inside:avoid;padding:8px 0}
 }
 #ldr{position:fixed;inset:0;z-index:200;display:grid;place-items:center;align-content:center;gap:16px;background:var(--bg);
- background-image:linear-gradient(var(--ln) 1px,transparent 1px),linear-gradient(90deg,var(--ln) 1px,transparent 1px),linear-gradient(var(--ln2) 1px,transparent 1px),linear-gradient(90deg,var(--ln2) 1px,transparent 1px);
- background-size:24px 24px,24px 24px,120px 120px,120px 120px;transition:opacity .6s,visibility .6s;cursor:pointer}
+ transition:opacity .6s,visibility .6s;cursor:pointer}
 #ldr.out{opacity:0;visibility:hidden}
 .ldr-sheet{position:relative;width:min(560px,90vw);border:1.5px solid var(--ln3);background:rgba(7,26,44,.92);padding:16px 20px 18px}
 .ldr-sheet:before,.ldr-sheet:after{content:"";position:absolute;width:12px;height:12px;border:1.5px solid var(--mint)}
@@ -827,7 +824,7 @@ body[data-page="home"] .proj.home-hide{display:none}
 @media (prefers-reduced-motion:reduce){.btn.shiny,.btn.shiny:before,.btn.shiny:after,.btn.shiny .sh-lbl:before{animation:none}}
 
 /* sheet titles: extruded 3D block (idea from freefrontend's CSS 3D text effects). Stacked 1px text-shadows in deep teal
-   give the letters a solid side, and a soft drop shadow lifts them off the grid. */
+   give the letters a solid side, and a soft drop shadow lifts them off the page. */
 .sh h2,.contact h2{--x1:#134e5a;--x2:#124854;--x3:#114350;--x4:#0f3d4a;--x5:#0e3845;--x6:#0c3240;--x7:#0b2d3a;--x8:#0a2834;
   text-shadow:1px 1px 0 var(--x1),2px 2px 0 var(--x2),3px 3px 0 var(--x3),4px 4px 0 var(--x4),5px 5px 0 var(--x5),6px 6px 0 var(--x6),7px 7px 0 var(--x7),8px 8px 0 var(--x8),10px 12px 18px rgba(0,0,0,.55)}
 @media (max-width:720px){.sh h2,.contact h2{text-shadow:1px 1px 0 var(--x1),2px 2px 0 var(--x3),3px 3px 0 var(--x5),4px 4px 0 var(--x7),6px 8px 12px rgba(0,0,0,.5)}}
