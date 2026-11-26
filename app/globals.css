@@ -724,11 +724,6 @@ body[data-page="home"] .proj.home-hide{display:none}
 @media (prefers-reduced-motion:reduce){.px-log.talking .px-row.bot:last-child .px-av-m{animation:none}}
 
 
-/* one page per tab: a "next page" link at the end of each page */
-.nextpg{display:flex;justify-content:flex-end;align-items:center;gap:16px;margin-top:28px;margin-bottom:10px;padding-top:22px;border-top:1px solid var(--ln2)}
-.nextpg>span{font:11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
-.nextpg a{font:600 22px var(--head);color:var(--ink);text-decoration:none;display:inline-flex;gap:10px;align-items:center}
-.nextpg a span{color:var(--mint);transition:transform .25s}.nextpg a:hover span{transform:translateX(5px)}
 
 /* contact pop-up Tally (watches typing, covers eyes for the email) */
 .cm-tally{position:relative;width:118px;height:131px;margin:-6px 0 14px -4px;transform:rotate(var(--tilt,0deg));transition:transform .35s cubic-bezier(.2,.8,.2,1)}
