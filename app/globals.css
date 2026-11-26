@@ -697,3 +697,10 @@ body[data-page="home"] .proj.home-hide{display:none}
 .cm .px-form-bot{display:none}
 @media (max-width:720px){.cm-act small{flex-basis:100%;margin:0 0 4px}.cm-body{grid-template-columns:1fr;gap:24px;padding:26px 22px}.cm-l h3{font-size:32px}.cm-info{padding-top:14px}}
 @media (prefers-reduced-motion:reduce){.cm-win,.cm-bg{transition:none}}
+
+/* hero role: SQL line with a rolling value (idea from a CodePen "text roller", rewritten in SQL style) */
+.role.sqlr{font:500 clamp(15px,1.55vw,20px)/1.3 var(--mono);color:var(--ink);letter-spacing:.01em;white-space:nowrap}
+.sqlr .k{color:var(--sky);font-weight:600}.sqlr .s{color:var(--amber)}.sqlr .p{color:var(--mut)}
+.sqlr .roll{display:inline-block;vertical-align:bottom;overflow:hidden;height:1.3em;transition:width .55s cubic-bezier(.4,0,.2,1)}
+.sqlr .roll-in{display:flex;flex-direction:column;align-items:flex-start;transition:transform .65s cubic-bezier(.55,-.25,.3,1.35)}
+.sqlr .roll b{display:block;height:1.3em;line-height:1.3em;white-space:nowrap;font-weight:500;color:var(--amber)}
