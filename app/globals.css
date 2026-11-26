@@ -758,3 +758,12 @@ body[data-page="home"] .proj.home-hide{display:none}
 .tally-fly{position:fixed;z-index:130;pointer-events:none;transform-origin:0 0;margin:0;opacity:1;user-select:none}
 #tally.away{opacity:0!important;pointer-events:none}
 .cm-tally.waiting{visibility:hidden}
+
+/* contact Tally, email moment (option D): looks away and whistles */
+.cm-tally .ct-face{overflow:visible}
+.cm-tally .ct-notes text{opacity:0;animation:ctNote 1.8s ease-out infinite}
+.cm-tally .ct-notes .n2{animation-delay:.9s}
+@keyframes ctNote{0%{opacity:0;transform:translate(0,0)}20%{opacity:1}100%{opacity:0;transform:translate(26px,-30px)}}
+.cm-tally .ct-o{transform-box:fill-box;transform-origin:center;animation:ctWhistle .9s ease-in-out infinite alternate}
+@keyframes ctWhistle{to{transform:scale(.75)}}
+@media (prefers-reduced-motion:reduce){.cm-tally .ct-notes text{animation:none;opacity:1}.cm-tally .ct-o{animation:none}}
