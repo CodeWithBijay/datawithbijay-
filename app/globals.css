@@ -767,3 +767,15 @@ body[data-page="home"] .proj.home-hide{display:none}
 .cm-tally .ct-o{transform-box:fill-box;transform-origin:center;animation:ctWhistle .9s ease-in-out infinite alternate}
 @keyframes ctWhistle{to{transform:scale(.75)}}
 @media (prefers-reduced-motion:reduce){.cm-tally .ct-notes text{animation:none;opacity:1}.cm-tally .ct-o{animation:none}}
+
+/* contact Tally floats like the one roaming the site: gentle bob with a shadow that shrinks as it rises */
+.cm-tally .ct-pose,.cm-tally .ct-face,.cm-tally .ct-hands{animation:ctFloat 3.3s ease-in-out infinite}
+.cm-tally:before{content:"";position:absolute;left:50%;top:calc(100% - 2px);width:56px;height:8px;margin-left:-34px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.55),transparent);animation:ctShadow 3.3s ease-in-out infinite;pointer-events:none}
+@keyframes ctFloat{0%,100%{translate:0 0}50%{translate:0 -8px}}
+@keyframes ctShadow{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(.72);opacity:.5}}
+@media (max-width:720px){.cm-tally:before{width:44px;margin-left:-28px}}
+@media (prefers-reduced-motion:reduce){.cm-tally .ct-pose,.cm-tally .ct-face,.cm-tally .ct-hands,.cm-tally:before{animation:none}}
+/* contact Tally laughing: shakes all over */
+.cm-tally.laugh{animation:ctLaugh .16s linear 13 alternate}
+@keyframes ctLaugh{0%{rotate:-5deg;translate:-2px 0}100%{rotate:5deg;translate:2px -3px}}
+@media (prefers-reduced-motion:reduce){.cm-tally.laugh{animation:none}}
