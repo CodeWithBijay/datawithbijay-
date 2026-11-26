@@ -871,21 +871,17 @@ h2.has-dual .dual span{color:#e6f1fb}
 /* role line a little smaller */
 .role.sqlf{font-size:clamp(13px,1.2vw,16px)}
 
-/* "Open to roles" pill: dark ripple (idea: "Dark Ripple Pre-Loader" by MrPirrera on CodePen), in mint.
-   Three soft glassy rings sit around the pill and light up one after another, so a ripple keeps flowing outward. */
-.open-pill.ripple{position:relative;isolation:isolate;background:linear-gradient(0deg,rgba(94,234,212,.05),rgba(125,211,252,.10));backdrop-filter:blur(4px);
-  border-color:rgba(125,211,252,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.08);transition:border-color .3s,box-shadow .3s}
-.open-pill.ripple .rp{position:absolute;border-radius:6px;pointer-events:none;z-index:-1;
-  border:1px solid rgba(94,234,212,.22);border-top-color:rgba(167,243,231,.45);
-  background:linear-gradient(0deg,rgba(94,234,212,.025),rgba(125,211,252,.06));
-  animation:rpWave 2.6s ease-in-out infinite}
-.open-pill.ripple .rp:nth-of-type(1){inset:-6px;animation-delay:0s}
-.open-pill.ripple .rp:nth-of-type(2){inset:-13px;border-radius:10px;animation-delay:.22s}
-.open-pill.ripple .rp:nth-of-type(3){inset:-21px;border-radius:14px;animation-delay:.44s}
-@keyframes rpWave{0%,100%{opacity:.18;transform:scale(1)}30%{opacity:1;transform:scale(1.025)}60%{opacity:.35;transform:scale(1)}}
-.open-pill.ripple i{animation:rpDot 2.6s ease-in-out infinite}
-@keyframes rpDot{0%,100%{box-shadow:0 0 6px var(--mint)}25%{box-shadow:0 0 14px 2px var(--mint)}}
-.open-pill.ripple:hover{border-color:var(--mint);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 0 24px -6px rgba(94,234,212,.5)}
-.open-pill.ripple:hover .rp{animation-duration:1.6s}
-@media (max-width:560px){.open-pill.ripple .rp:nth-of-type(3){display:none}}
-@media (prefers-reduced-motion:reduce){.open-pill.ripple .rp,.open-pill.ripple i{animation:none}.open-pill.ripple .rp{opacity:.4}}
+/* "Open to roles" pill: simple glossy glass. A soft mint-to-navy fill, a bright highlight across the top half,
+   and a light sheen that slides across once when you hover. */
+.open-pill.glossy{position:relative;overflow:hidden;isolation:isolate;border-radius:8px;border:1px solid rgba(125,211,252,.45);
+  background:linear-gradient(180deg,rgba(125,211,252,.20) 0%,rgba(94,234,212,.08) 48%,rgba(6,26,43,.65) 52%,rgba(94,234,212,.10) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(94,234,212,.18),0 8px 24px -12px rgba(94,234,212,.45);
+  color:#dff7ff;transition:border-color .3s,box-shadow .3s,transform .3s}
+.open-pill.glossy:before{content:"";position:absolute;left:1px;right:1px;top:1px;height:46%;border-radius:7px 7px 14px 14px/7px 7px 6px 6px;
+  background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,.04));pointer-events:none;z-index:-1}
+.open-pill.glossy:after{content:"";position:absolute;top:-20%;bottom:-20%;left:-60%;width:40%;transform:skewX(-20deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);pointer-events:none;transition:none}
+.open-pill.glossy:hover{border-color:rgba(94,234,212,.8);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -1px 0 rgba(94,234,212,.3),0 10px 30px -10px rgba(94,234,212,.6)}
+.open-pill.glossy:hover:after{left:130%;transition:left .8s ease}
+.open-pill.glossy span{text-shadow:0 1px 0 rgba(0,0,0,.35)}
+@media (prefers-reduced-motion:reduce){.open-pill.glossy:hover:after{transition:none;left:-60%}}
