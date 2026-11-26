@@ -583,3 +583,17 @@ body.chat-on #tally .tl-ping i{animation-duration:2.4s}
 
 /* anti-spam trap field: off-screen for people, still "visible" to form bots */
 #contact-form .hp{position:absolute!important;left:-9999px!important;top:auto;width:1px;height:1px;overflow:hidden}
+
+/* Stats made visible: live dot, menu item, hero live line */
+.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--mint,#5eead4);box-shadow:0 0 0 0 rgba(94,234,212,.6);animation:liveDot 2s ease-out infinite;flex:none}
+@keyframes liveDot{0%{box-shadow:0 0 0 0 rgba(94,234,212,.55)}70%{box-shadow:0 0 0 7px rgba(94,234,212,0)}100%{box-shadow:0 0 0 0 rgba(94,234,212,0)}}
+.dk-links a.dk-stats{display:inline-flex;align-items:center;gap:7px;color:var(--mint,#5eead4)}
+.dk-links a.dk-stats:hover{color:var(--ink)}
+.live-line{display:block;margin-top:16px;font:11px/1.7 var(--mono);color:var(--mut);letter-spacing:.04em;text-decoration:none;max-width:520px}
+.live-line .live-dot{vertical-align:1px;margin-right:9px}
+.live-line[hidden]{display:none}
+.live-line b{font-weight:500;color:var(--mint,#5eead4);white-space:nowrap}
+.live-line b{display:block;margin-top:3px;padding-left:16px}
+.live-line:hover b{text-decoration:underline;text-underline-offset:3px}
+@media (prefers-reduced-motion:reduce){.live-dot{animation:none}}
+.mm-stats{color:var(--mint,#5eead4)!important}
