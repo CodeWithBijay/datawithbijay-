@@ -825,3 +825,10 @@ body[data-page="home"] .proj.home-hide{display:none}
 @keyframes shShimmer{to{rotate:360deg}}
 @keyframes shBreathe{0%,100%{scale:1}50%{scale:1.2}}
 @media (prefers-reduced-motion:reduce){.btn.shiny,.btn.shiny:before,.btn.shiny:after,.btn.shiny .sh-lbl:before{animation:none}}
+
+/* sheet titles: extruded 3D block (idea from freefrontend's CSS 3D text effects). Stacked 1px text-shadows in deep teal
+   give the letters a solid side, and a soft drop shadow lifts them off the grid. */
+.sh h2,.contact h2{--x1:#134e5a;--x2:#124854;--x3:#114350;--x4:#0f3d4a;--x5:#0e3845;--x6:#0c3240;--x7:#0b2d3a;--x8:#0a2834;
+  text-shadow:1px 1px 0 var(--x1),2px 2px 0 var(--x2),3px 3px 0 var(--x3),4px 4px 0 var(--x4),5px 5px 0 var(--x5),6px 6px 0 var(--x6),7px 7px 0 var(--x7),8px 8px 0 var(--x8),10px 12px 18px rgba(0,0,0,.55)}
+@media (max-width:720px){.sh h2,.contact h2{text-shadow:1px 1px 0 var(--x1),2px 2px 0 var(--x3),3px 3px 0 var(--x5),4px 4px 0 var(--x7),6px 8px 12px rgba(0,0,0,.5)}}
+@media print{.sh h2,.contact h2{text-shadow:none}}
