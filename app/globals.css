@@ -779,3 +779,11 @@ body[data-page="home"] .proj.home-hide{display:none}
 .cm-tally.laugh{animation:ctLaugh .16s linear 13 alternate}
 @keyframes ctLaugh{0%{rotate:-5deg;translate:-2px 0}100%{rotate:5deg;translate:2px -3px}}
 @media (prefers-reduced-motion:reduce){.cm-tally.laugh{animation:none}}
+
+/* floating Tally uses face style B too */
+#tally .tl-hap,#tally .tl-blush,#tally .tl-tear{opacity:0;transition:opacity .18s}
+#tally .tl-eo{transition:opacity .18s}
+#tally.happy .tl-eo{opacity:0}#tally.happy .tl-hap,#tally.happy .tl-blush{opacity:1}
+#tally.sad .tl-tear{opacity:1;animation:tlTear 1.6s ease-in infinite}
+@keyframes tlTear{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(10px);opacity:0}}
+@media (prefers-reduced-motion:reduce){#tally.sad .tl-tear{animation:none}}
