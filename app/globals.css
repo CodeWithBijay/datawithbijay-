@@ -729,3 +729,24 @@ body[data-page="home"] .proj.home-hide{display:none}
 .nextpg>span{font:11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
 .nextpg a{font:600 22px var(--head);color:var(--ink);text-decoration:none;display:inline-flex;gap:10px;align-items:center}
 .nextpg a span{color:var(--mint);transition:transform .25s}.nextpg a:hover span{transform:translateX(5px)}
+
+/* contact pop-up Tally (watches typing, covers eyes for the email) */
+.cm-tally{position:relative;width:118px;height:131px;margin:-6px 0 14px -4px;transform:rotate(var(--tilt,0deg));transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.cm-tally .ct-pose{position:absolute;left:0;top:0;width:118px;height:131px;opacity:0;transition:opacity .18s;user-select:none;-webkit-user-drag:none}
+.cm-tally .ct-pose.on{opacity:1}
+.cm-tally .ct-face{position:absolute;left:14.75px;top:14.16px;width:79.7px;height:54.1px;overflow:visible}
+.cm-tally .ct-face path{transition:d .25s}
+.cm-tally .ct-pup{transition:cx .12s linear,cy .12s linear}
+.cm-tally .ct-hands{position:absolute;left:0;top:0;width:118px;height:131px;overflow:visible;pointer-events:none}
+.cm-tally .ct-h{transition:transform .38s cubic-bezier(.3,1.4,.5,1),opacity .2s}
+.cm-tally .ct-h.l{transform:translate(8px,70px) rotate(-20deg);opacity:0}
+.cm-tally .ct-h.r{transform:translate(60px,70px) rotate(20deg);opacity:0}
+.cm-tally.cover .ct-h.l{transform:translate(23px,23px) rotate(8deg);opacity:1}
+.cm-tally.cover .ct-h.r{transform:translate(43px,23px) rotate(-8deg);opacity:1}
+.cm-tally .ct-say{position:absolute;left:112px;top:22px;white-space:nowrap;font:11px var(--mono);color:var(--ink);background:rgba(7,26,44,.96);border:1px solid rgba(125,211,252,.5);padding:5px 9px;opacity:0;transform:translateY(4px);transition:opacity .2s,transform .2s;pointer-events:none}
+.cm-tally.says .ct-say{opacity:1;transform:none}
+.cm-tally.hop{animation:ctHop .7s cubic-bezier(.3,1.6,.5,1)}
+@keyframes ctHop{0%{translate:0 0}35%{translate:0 -16px}70%{translate:0 0}85%{translate:0 -5px}100%{translate:0 0}}
+@media (max-width:720px){.cm-tally{width:90px;height:100px;margin-bottom:8px}.cm-tally .ct-pose,.cm-tally .ct-hands{width:90px;height:100px}
+  .cm-tally .ct-face{left:11.25px;top:10.8px;width:60.8px;height:41.3px}.cm-tally .ct-say{left:88px;top:14px}}
+@media (prefers-reduced-motion:reduce){.cm-tally,.cm-tally .ct-h{transition:none}.cm-tally.hop{animation:none}}
