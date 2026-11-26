@@ -630,9 +630,9 @@ b.hl.on{background-size:100% 100%}
 .tilt3d .sheen{position:absolute;inset:0;pointer-events:none;z-index:4;opacity:0;transition:opacity .35s;background:radial-gradient(420px circle at var(--sx,50%) var(--sy,50%),rgba(255,255,255,.07),transparent 55%)}
 .tilt3d.on .sheen{opacity:1}
 /* 2: layered name */
-#nameH1.depth #bj,#nameH1.depth #bjDots{transform:translate(calc(var(--dx,0)*14px),calc(var(--dy,0)*10px));transition:transform .4s cubic-bezier(.2,.8,.2,1)}
-#nameH1.depth .outline{display:inline-block;transform:translate(calc(var(--dx,0)*-8px),calc(var(--dy,0)*-6px));transition:transform .4s cubic-bezier(.2,.8,.2,1),filter .4s;
-  filter:drop-shadow(calc(var(--dx,0)*-6px + 2px) calc(var(--dy,0)*-5px + 2px) 0 rgba(94,234,212,.22)) drop-shadow(calc(var(--dx,0)*-12px + 4px) calc(var(--dy,0)*-10px + 4px) 0 rgba(94,234,212,.1))}
+#nameH1.depth #bj,#nameH1.depth #bjDots{transform:translate(calc(var(--bx,0)*14px),calc(var(--by,0)*10px));transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+#nameH1.depth .outline{display:inline-block;transform:translate(calc(var(--px,0)*-8px),calc(var(--py,0)*-6px));transition:transform .4s cubic-bezier(.2,.8,.2,1),filter .4s;
+  filter:drop-shadow(calc(var(--px,0)*-6px + 2px) calc(var(--py,0)*-5px + 2px) 0 rgba(94,234,212,.22)) drop-shadow(calc(var(--px,0)*-12px + 4px) calc(var(--py,0)*-10px + 4px) 0 rgba(94,234,212,.1))}
 /* 4: grid horizon above the footer */
 .horizon{position:relative;height:170px;overflow:hidden;perspective:340px;pointer-events:none;
   -webkit-mask:linear-gradient(to bottom,transparent,#000 45%,#000 70%,transparent);mask:linear-gradient(to bottom,transparent,#000 45%,#000 70%,transparent)}
