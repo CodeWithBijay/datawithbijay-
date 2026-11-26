@@ -722,3 +722,14 @@ body[data-page="home"] .proj.home-hide{display:none}
 @keyframes pxTalk{from{transform:scaleY(.4)}to{transform:scaleY(1.8)}}
 .px-log.talking .px-row.bot:last-child .px-av svg{filter:drop-shadow(0 0 4px rgba(94,234,212,.6))}
 @media (prefers-reduced-motion:reduce){.px-log.talking .px-row.bot:last-child .px-av-m{animation:none}}
+
+/* About photo: a picture frame (dark bevelled frame, light mat, glass reflection). The reflection ignores the mouse,
+   so the blueprint/photo hover effect underneath keeps working. Layout idea from a CodePen "Frame", rewritten. */
+.pframe{position:relative;padding:12px;background:linear-gradient(145deg,#30353d 0%,#15181c 45%,#0d0f12 70%,#22262c 100%);
+  box-shadow:inset 1px 1px 0 rgba(255,255,255,.14),inset -1px -1px 0 rgba(0,0,0,.6),inset 0 0 0 4px rgba(0,0,0,.25),0 22px 34px -14px rgba(0,0,0,.85),0 5px 10px rgba(0,0,0,.45)}
+.pmat{padding:16px;background:linear-gradient(180deg,#f1ede4,#e6e0d3);box-shadow:inset 0 2px 4px rgba(0,0,0,.45),inset 0 0 0 1px rgba(0,0,0,.2)}
+.pmat .phbox{box-shadow:0 0 0 1px rgba(0,0,0,.25),0 1px 0 1px rgba(255,255,255,.5)}
+.pglass{position:absolute;inset:12px;z-index:3;pointer-events:none;
+  background:linear-gradient(118deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,.06) 30%,rgba(255,255,255,0) 30.4%),linear-gradient(118deg,transparent 62%,rgba(255,255,255,.04) 62.3%,transparent 80%)}
+.aside .ph:has(.pframe){padding:10px}
+@media (max-width:980px){.pframe{padding:9px}.pmat{padding:11px}.pglass{inset:9px}}
