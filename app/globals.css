@@ -871,17 +871,10 @@ h2.has-dual .dual span{color:#e6f1fb}
 /* role line a little smaller */
 .role.sqlf{font-size:clamp(13px,1.2vw,16px)}
 
-/* "Open to roles" pill: simple glossy glass. A soft mint-to-navy fill, a bright highlight across the top half,
-   and a light sheen that slides across once when you hover. */
-.open-pill.glossy{position:relative;overflow:hidden;isolation:isolate;border-radius:8px;border:1px solid rgba(125,211,252,.45);
-  background:linear-gradient(180deg,rgba(125,211,252,.20) 0%,rgba(94,234,212,.08) 48%,rgba(6,26,43,.65) 52%,rgba(94,234,212,.10) 100%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(94,234,212,.18),0 8px 24px -12px rgba(94,234,212,.45);
-  color:#dff7ff;transition:border-color .3s,box-shadow .3s,transform .3s}
-.open-pill.glossy:before{content:"";position:absolute;left:1px;right:1px;top:1px;height:46%;border-radius:7px 7px 14px 14px/7px 7px 6px 6px;
-  background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,.04));pointer-events:none;z-index:-1}
-.open-pill.glossy:after{content:"";position:absolute;top:-20%;bottom:-20%;left:-60%;width:40%;transform:skewX(-20deg);
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);pointer-events:none;transition:none}
-.open-pill.glossy:hover{border-color:rgba(94,234,212,.8);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -1px 0 rgba(94,234,212,.3),0 10px 30px -10px rgba(94,234,212,.6)}
-.open-pill.glossy:hover:after{left:130%;transition:left .8s ease}
-.open-pill.glossy span{text-shadow:0 1px 0 rgba(0,0,0,.35)}
-@media (prefers-reduced-motion:reduce){.open-pill.glossy:hover:after{transition:none;left:-60%}}
+/* "Open to roles" pill: same look as the navigation bar (rounded pill, dark blurred glass, thin sky border, Inter text) */
+.open-pill.navlike{border-radius:999px;padding:11px 20px 11px 16px;gap:10px;background:rgba(9,30,50,.82);border:1px solid rgba(125,211,252,.28);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 18px 40px -22px rgba(0,0,0,.9);
+  font:500 14px Inter,system-ui,sans-serif;letter-spacing:0;text-transform:none;color:var(--ink);transition:border-color .2s,color .2s,background .2s}
+.open-pill.navlike i{width:8px;height:8px;border-radius:50%;background:var(--mint);box-shadow:0 0 8px var(--mint)}
+.open-pill.navlike:hover{border-color:var(--mint);color:var(--mint);background:rgba(94,234,212,.06)}
+@media (max-width:560px){.open-pill.navlike{font-size:13px;padding:10px 16px 10px 13px}}
