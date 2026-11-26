@@ -704,3 +704,21 @@ body[data-page="home"] .proj.home-hide{display:none}
 .sqlr .roll{display:inline-block;vertical-align:bottom;overflow:hidden;height:1.3em;transition:width .55s cubic-bezier(.4,0,.2,1)}
 .sqlr .roll-in{display:flex;flex-direction:column;align-items:flex-start;transition:transform .65s cubic-bezier(.55,-.25,.3,1.35)}
 .sqlr .roll b{display:block;height:1.3em;line-height:1.3em;white-space:nowrap;font-weight:500;color:var(--amber)}
+
+/* chat: WhatsApp-style rows with Tally's avatar */
+.px-row{display:flex;align-items:flex-end;gap:7px;max-width:90%}
+.px-row.bot{align-self:flex-start}.px-row.me{align-self:flex-end}
+.px-row .px-msg{max-width:100%}
+.px-row + .px-row.bot,.px-row.me + .px-row.me{margin-top:-5px}
+.px-row.bot + .px-row.bot{margin-top:-6px}
+.px-av{flex:none;width:26px;height:23px;display:grid;place-items:center}
+.px-av svg{width:26px;height:23px}
+.px-row.bot:has(+ .px-row.bot) .px-av{visibility:hidden}
+.px-row .px-msg.bot{border-radius:14px 14px 14px 4px;background:#0f2a42;border:1px solid rgba(125,211,252,.22)}
+.px-row .px-msg.me{border-radius:14px 14px 4px 14px;background:rgba(94,234,212,.16);border:1px solid rgba(94,234,212,.4);color:#eafffb}
+.px-row.bot:has(+ .px-row.bot) .px-msg.bot{border-radius:14px}
+.px-av-m{transform-origin:17px 18.5px;transform-box:view-box}
+.px-log.talking .px-row.bot:last-child .px-av-m{animation:pxTalk .16s ease-in-out infinite alternate}
+@keyframes pxTalk{from{transform:scaleY(.4)}to{transform:scaleY(1.8)}}
+.px-log.talking .px-row.bot:last-child .px-av svg{filter:drop-shadow(0 0 4px rgba(94,234,212,.6))}
+@media (prefers-reduced-motion:reduce){.px-log.talking .px-row.bot:last-child .px-av-m{animation:none}}
