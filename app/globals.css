@@ -845,3 +845,12 @@ body[data-page="home"] .proj.home-hide{display:none}
 .sqlq.armed .qres tbody tr:not(.on){opacity:.12}
 .sqlq .qres tbody tr.on{opacity:1;background:rgba(94,234,212,.08)}.sqlq.done .qres tbody tr.on{background:none}
 .sqlq .qmeta{font:11px var(--mono);color:var(--dim);margin-top:6px;min-height:1.2em;letter-spacing:.04em}
+
+/* sheet titles: dual colour split that sweeps through the letters as you scroll */
+h2.has-dual{position:relative}
+h2.has-dual .dual{position:absolute;inset:0;pointer-events:none;color:var(--mint);
+  text-shadow:1px 1px 0 #0b2d3a,2px 2px 0 #0a2834,3px 3px 0 #09232e,4px 4px 0 #081f29,5px 5px 0 #071b24,6px 6px 0 #06171f,7px 7px 0 #05141b,8px 8px 0 #041117;
+  clip-path:inset(var(--cut,0px) -20px -30px -20px)}
+h2.has-dual .dual span{color:#e6f1fb}
+@media (max-width:720px){h2.has-dual .dual{text-shadow:1px 1px 0 #0b2d3a,2px 2px 0 #09232e,3px 3px 0 #071b24,4px 4px 0 #05141b}}
+@media print{h2.has-dual .dual{display:none}}
