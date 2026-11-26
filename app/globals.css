@@ -745,3 +745,16 @@ body[data-page="home"] .proj.home-hide{display:none}
 @media (max-width:720px){.cm-tally{width:90px;height:100px;margin-bottom:8px}.cm-tally .ct-pose,.cm-tally .ct-hands{width:90px;height:100px}
   .cm-tally .ct-face{left:11.25px;top:10.8px;width:60.8px;height:41.3px}.cm-tally .ct-say{left:88px;top:14px}}
 @media (prefers-reduced-motion:reduce){.cm-tally,.cm-tally .ct-h{transition:none}.cm-tally.hop{animation:none}}
+
+/* contact Tally face style B */
+.cm-tally .ct-pg{transition:transform .12s linear}
+.cm-tally .ct-f{transform-origin:73px 52px;transition:transform .1s}
+.cm-tally.blink .ct-f{transform:scaleY(.12)}
+.cm-tally .ct-tear{animation:ctTear 1.4s ease-in infinite}
+@keyframes ctTear{0%{transform:translateY(0);opacity:1}100%{transform:translateY(10px);opacity:0}}
+@media (prefers-reduced-motion:reduce){.cm-tally .ct-tear{animation:none}}
+
+/* Tally flies between the page and the contact pop-up */
+.tally-fly{position:fixed;z-index:130;pointer-events:none;transform-origin:0 0;margin:0;opacity:1;user-select:none}
+#tally.away{opacity:0!important;pointer-events:none}
+.cm-tally.waiting{visibility:hidden}
