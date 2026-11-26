@@ -854,3 +854,17 @@ h2.has-dual .dual{position:absolute;inset:0;pointer-events:none;color:var(--mint
 h2.has-dual .dual span{color:#e6f1fb}
 @media (max-width:720px){h2.has-dual .dual{text-shadow:1px 1px 0 #0b2d3a,2px 2px 0 #09232e,3px 3px 0 #071b24,4px 4px 0 #05141b}}
 @media print{h2.has-dual .dual{display:none}}
+
+/* hero role line: simple fade */
+.role.sqlf{font:500 clamp(15px,1.55vw,20px)/1.3 var(--mono);color:var(--ink);letter-spacing:.01em;white-space:nowrap}
+.sqlf .k{color:var(--sky);font-weight:600}.sqlf .s{color:var(--amber)}.sqlf .p{color:var(--mut)}
+.sqlf .fd{display:inline-block;transition:opacity .4s ease,filter .4s ease}
+.sqlf .fd.out{opacity:0;filter:blur(3px)}
+/* role line style B: mint keywords, bold white role */
+.role.sqlf{color:#8fb0cc}
+.sqlf .k{color:var(--mint,#5eead4);font-weight:700}
+.sqlf .s{color:#f8fafc;font-weight:700}
+.sqlf .p{color:#5b738c}
+/* role line: smooth glide of AS role; while the role is hidden */
+.sqlf .fd{white-space:nowrap;overflow:hidden;vertical-align:bottom}
+.sqlf .fd.glide{transition:width .45s cubic-bezier(.4,0,.2,1),opacity .4s ease,filter .4s ease}
