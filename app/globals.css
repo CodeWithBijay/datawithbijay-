@@ -602,3 +602,23 @@ body.chat-on #tally .tl-ping i{animation-duration:2.4s}
 b.hl{background-image:linear-gradient(transparent 60%,rgba(94,234,212,.3) 60%,rgba(94,234,212,.3) 94%,transparent 94%);background-repeat:no-repeat;background-size:0% 100%;transition:background-size 1s cubic-bezier(.2,.7,.2,1);-webkit-box-decoration-break:clone;box-decoration-break:clone}
 b.hl.on{background-size:100% 100%}
 @media (prefers-reduced-motion:reduce){b.hl{background-size:100% 100%;transition:none}}
+
+/* ---- interaction effects ---- */
+/* 2. cursor spotlight */
+.spot{position:relative;isolation:isolate}
+.spot::after{content:'';position:absolute;inset:-1px;pointer-events:none;z-index:2;border-radius:inherit;opacity:0;transition:opacity .35s;
+  background:radial-gradient(380px circle at var(--mx,50%) var(--my,50%),rgba(94,234,212,.12),transparent 62%);
+  border:1px solid transparent;-webkit-mask:none}
+.spot::before{content:'';position:absolute;inset:-1px;pointer-events:none;z-index:3;border-radius:inherit;opacity:0;transition:opacity .35s;padding:1px;
+  background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%),rgba(94,234,212,.95),transparent 70%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.spot:hover::after,.spot:hover::before{opacity:1}
+/* 4. reading progress */
+.readbar{position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,var(--sky,#7dd3fc),var(--mint,#5eead4));transform:scaleX(0);transform-origin:0 50%;transition:transform .1s linear;z-index:5;pointer-events:none}
+/* 5. magnetic buttons */
+.mag{transition:transform .25s cubic-bezier(.2,.8,.2,1)!important;will-change:transform}
+/* 6. staggered Journey rows */
+.log.stg .ent{opacity:0;transform:translateY(10px)}
+.log.stg.go .ent{animation:entIn .55s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 80ms)}
+@keyframes entIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.log.stg .ent{opacity:1;transform:none;animation:none}.readbar{transition:none}}

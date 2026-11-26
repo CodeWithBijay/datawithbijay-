@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { db } from "@/lib/db";
+import CountUpKpis from "@/components/CountUpKpis";
 
 // Public stats for this website, served from the reporting layer that GitHub Actions rebuilds every night.
 export const revalidate = 600; // refresh at most every 10 minutes
@@ -122,6 +123,7 @@ export default async function Stats() {
         <p className="st-empty st-box">The stats database isn&apos;t connected yet. Check back soon.</p>
       ) : (
         <>
+          <CountUpKpis />
           <div className="st-kpis">
             <div><small>Page views · 30 days</small><b>{fmt(n(d.kpi.v))}</b></div>
             <div><small>Visitors · 30 days</small><b>{fmt(n(d.kpi.u))}</b><span>counted once per day</span></div>
