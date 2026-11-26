@@ -868,3 +868,5 @@ h2.has-dual .dual span{color:#e6f1fb}
 /* role line: smooth glide of AS role; while the role is hidden */
 .sqlf .fd{white-space:nowrap;overflow:hidden;vertical-align:bottom}
 .sqlf .fd.glide{transition:width .45s cubic-bezier(.4,0,.2,1),opacity .4s ease,filter .4s ease}
+/* role line a little smaller */
+.role.sqlf{font-size:clamp(13px,1.2vw,16px)}
