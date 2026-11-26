@@ -652,17 +652,8 @@ b.hl.on{background-size:100% 100%}
 .flip dt{font:500 10.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--sky)}
 .flip dd{margin:0;font-size:14px;color:var(--ink)}
 .fliphint{align-self:flex-end;font:10px var(--mono);letter-spacing:.08em;color:var(--dim);margin-top:6px}
-/* 6: skills sphere */
-.sph-wrap{margin-top:34px;border:1.5px solid var(--ln3);background:rgba(7,26,44,.88);padding:18px 18px 14px;position:relative}
-.sph-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}.sph-head p{margin:0;color:var(--mut);font-size:14px}
-.sph{position:relative;height:420px;cursor:grab;touch-action:none;user-select:none}
-.sph:active{cursor:grabbing}
-.sph-i{position:absolute;left:0;top:0;white-space:nowrap;font:500 13px var(--mono);color:var(--ink);background:rgba(11,34,56,.92);border:1px solid rgba(125,211,252,.45);padding:5px 10px;border-radius:3px;cursor:pointer;transition:border-color .2s,color .2s,background .2s}
-.sph-i:hover,.sph-i.sel{border-color:var(--mint,#5eead4);color:var(--mint,#5eead4);background:rgba(94,234,212,.12)}
-.sph-out{margin:6px 0 0;text-align:center;font:12px/1.6 var(--mono);color:var(--mut);min-height:1.6em}
-.stage li.hit{color:var(--mint,#5eead4)!important;text-shadow:0 0 12px rgba(94,234,212,.5)}
-@media (max-width:640px){.sph{height:320px}.sph-i{font-size:11.5px;padding:4px 8px}}
 @media (prefers-reduced-motion:reduce){.horizon::before{animation:none}.flip{transition:none}}
 
 /* small projects only on the Work page, not in the homepage scroll */
 body[data-page="home"] .proj.home-hide{display:none}
+
