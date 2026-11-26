@@ -597,3 +597,8 @@ body.chat-on #tally .tl-ping i{animation-duration:2.4s}
 .live-line:hover b{text-decoration:underline;text-underline-offset:3px}
 @media (prefers-reduced-motion:reduce){.live-dot{animation:none}}
 .mm-stats{color:var(--mint,#5eead4)!important}
+
+/* scroll highlighter sweep (key phrases) */
+b.hl{background-image:linear-gradient(transparent 60%,rgba(94,234,212,.3) 60%,rgba(94,234,212,.3) 94%,transparent 94%);background-repeat:no-repeat;background-size:0% 100%;transition:background-size 1s cubic-bezier(.2,.7,.2,1);-webkit-box-decoration-break:clone;box-decoration-break:clone}
+b.hl.on{background-size:100% 100%}
+@media (prefers-reduced-motion:reduce){b.hl{background-size:100% 100%;transition:none}}
