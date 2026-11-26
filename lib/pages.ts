@@ -14,6 +14,7 @@ export const PAGES: Record<string, { title: string; description: string }> = {
   "/contact": { title: "Contact", description: "Get in touch with Bijay Paudel about analytics and data engineering roles." },
   "/resume": { title: "Résumé", description: "Résumé of Bijay Paudel, data analyst and analytics engineer, M.S. Informatics (Analytics), Saint Louis University." },
   "/work/fraud": { title: "Case study: Fraud Operations Decision Intelligence", description: "A decision-support app that ranks fraud alerts so a review team works the riskiest ones first." },
+  "/work/pipeline": { title: "Case study: This website's own data pipeline", description: "Cookieless page views in PostgreSQL, a nightly GitHub Actions SQL job into reporting tables, and a live public dashboard." },
   "/work/help": { title: "Case study: St. Louis HELP impact dashboard", description: "A nightly data pipeline and impact dashboard for a nonprofit that lends donated medical equipment." },
 };
 
