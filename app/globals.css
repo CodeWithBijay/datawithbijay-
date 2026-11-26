@@ -919,3 +919,14 @@ h2.has-dual .dual span{color:#e6f1fb}
 /* keep title + meta clear of the diagram; only the description card overlaps it */
 @media (min-width:981px){.pj.pfeat .proj .l>h3,.pj.pfeat .proj .l>.meta,.pj.pfeat .proj .l>.ovl{max-width:84%}
   .pj.pfeat .proj .l>.tags,.pj.pfeat .proj .l>.cslinks{max-width:84%}}
+
+/* projects: hovering the diagram brings it to the front and sends the description card back */
+@media (hover:hover) and (pointer:fine) and (min-width:981px){
+  .pj.pfeat .proj .r{transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s,z-index 0s .2s}
+  .pj.pfeat .proj .l>p{transition:transform .45s cubic-bezier(.2,.7,.2,1),opacity .45s,filter .45s,box-shadow .45s}
+  .pj.pfeat .proj .r:hover{z-index:3;transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s,z-index 0s;
+    transform:translateY(-6px) scale(1.02);box-shadow:0 30px 60px -24px rgba(0,0,0,.95),0 0 0 1px rgba(94,234,212,.35)}
+  .pj.pfeat .proj:has(.r:hover) .l>p{transform:translateX(22px) scale(.96);opacity:.55;filter:blur(1px);box-shadow:none}
+  .pj.pfeat .proj:nth-child(even):has(.r:hover) .l>p{transform:translateX(-22px) scale(.96)}
+}
+@media (prefers-reduced-motion:reduce){.pj.pfeat .proj .r,.pj.pfeat .proj .l>p{transition:none!important}}
