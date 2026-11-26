@@ -663,3 +663,6 @@ b.hl.on{background-size:100% 100%}
 .stage li.hit{color:var(--mint,#5eead4)!important;text-shadow:0 0 12px rgba(94,234,212,.5)}
 @media (max-width:640px){.sph{height:320px}.sph-i{font-size:11.5px;padding:4px 8px}}
 @media (prefers-reduced-motion:reduce){.horizon::before{animation:none}.flip{transition:none}}
+
+/* small projects only on the Work page, not in the homepage scroll */
+body[data-page="home"] .proj.home-hide{display:none}
