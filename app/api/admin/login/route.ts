@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { scrypt, timingSafeEqual, createHash } from "crypto";
 import { promisify } from "util";
-import { ADMIN_COOKIE, SESSION_DAYS, adminConfigured, createSession } from "@/lib/adminSession";
+import { ADMIN_COOKIE, SESSION_DAYS, adminConfigured, adminEnv, createSession } from "@/lib/adminSession";
 import { allow, clientKey } from "@/lib/ratelimit";
 
 // Admin login (form on /admin/login). Checks your ID and password, then sets a signed 7-day cookie.
@@ -15,7 +15,7 @@ const sameText = (a: string, b: string) => timingSafeEqual(createHash("sha256").
 
 async function passwordMatches(password: string) {
   // format: scrypt:N:r:p:<salt base64>:<hash base64>   (made by scripts/admin-password.mjs)
-  const [kind, N, r, p, salt, hash] = (process.env.ADMIN_PASSWORD_HASH || "").split(":");
+  const [kind, N, r, p, salt, hash] = adminEnv("ADMIN_PASSWORD_HASH").replace(/\s+/g, "").split(":");
   if (kind !== "scrypt" || !salt || !hash) return false;
   const want = Buffer.from(hash, "base64");
   const got = await scryptAsync(password, Buffer.from(salt, "base64"), want.length, { N: +N, r: +r, p: +p, maxmem: 256 * 1024 * 1024 });
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
   const who = clientKey(req);
   if (!(await allow("admin-login", who, 5, 900)) || !(await allow("admin-login-all", "all", 30, 86400))) return back(req, "locked", next);
 
-  const ok = sameText(username, process.env.ADMIN_USERNAME || "") && (await passwordMatches(password));
+  const ok = sameText(username.toLowerCase(), adminEnv("ADMIN_USERNAME").toLowerCase()) && (await passwordMatches(password));
   if (!ok) {
     await new Promise((r) => setTimeout(r, 600)); // slows down guessing
     return back(req, "wrong", next);

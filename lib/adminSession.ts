@@ -20,12 +20,23 @@ const fromB64url = (s: string) => {
   return Uint8Array.from(t, (c) => c.charCodeAt(0));
 };
 
+// Reads an ADMIN_ setting and forgives common copy-paste slips in Vercel:
+// extra spaces or line breaks, surrounding quotes, or pasting the whole line "ADMIN_X=value" into the value box.
+export function adminEnv(name: "ADMIN_USERNAME" | "ADMIN_PASSWORD_HASH" | "ADMIN_SESSION_SECRET") {
+  let v = (process.env[name] || "").trim();
+  for (let i = 0; i < 2; i++) {
+    if (/^(["']).*\1$/s.test(v)) v = v.slice(1, -1).trim();
+    if (v.startsWith(name + "=")) v = v.slice(name.length + 1).trim();
+  }
+  return v;
+}
+
 export function adminConfigured() {
-  return !!(process.env.ADMIN_USERNAME && process.env.ADMIN_PASSWORD_HASH && process.env.ADMIN_SESSION_SECRET);
+  return !!(adminEnv("ADMIN_USERNAME") && adminEnv("ADMIN_PASSWORD_HASH") && adminEnv("ADMIN_SESSION_SECRET"));
 }
 
 async function hmac(data: string) {
-  const key = await crypto.subtle.importKey("raw", enc.encode(process.env.ADMIN_SESSION_SECRET || ""), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const key = await crypto.subtle.importKey("raw", enc.encode(adminEnv("ADMIN_SESSION_SECRET")), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
   return new Uint8Array(await crypto.subtle.sign("HMAC", key, enc.encode(data)));
 }
 
@@ -48,7 +59,7 @@ export async function verifySession(token: string | undefined | null): Promise<b
     for (let i = 0; i < given.length; i++) diff |= given[i] ^ expected[i]; // constant-time compare
     if (diff !== 0) return false;
     const data = JSON.parse(new TextDecoder().decode(fromB64url(payload)));
-    return data.u === process.env.ADMIN_USERNAME && typeof data.exp === "number" && data.exp > Date.now();
+    return String(data.u).toLowerCase() === adminEnv("ADMIN_USERNAME").toLowerCase() && typeof data.exp === "number" && data.exp > Date.now();
   } catch {
     return false;
   }
