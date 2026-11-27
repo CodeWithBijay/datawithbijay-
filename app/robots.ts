@@ -31,7 +31,7 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       { userAgent: AI_TRAINING_BOTS, disallow: "/" },
-      { userAgent: "*", allow: "/", disallow: ["/api/", "/keystatic"] },
+      { userAgent: "*", allow: "/", disallow: ["/api/", "/keystatic", "/admin"] },
     ],
     sitemap: "https://www.bijay-paudel.com.np/sitemap.xml",
     host: "https://www.bijay-paudel.com.np",

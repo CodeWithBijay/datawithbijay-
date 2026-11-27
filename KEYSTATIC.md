@@ -1,6 +1,20 @@
 # Content editor (Keystatic)
 
 Edit your site's content at **https://www.bijay-paudel.com.np/keystatic** — no code needed.
+You first log in with **your admin ID and password** at `/admin/login` (you stay logged in for 7 days; **Log out** is bottom-right).
+
+## Setting or changing the admin ID and password
+
+1. In Terminal, in your site folder: `node scripts/admin-password.mjs`
+   Type an ID and a password (12+ characters; typed hidden). It prints three lines.
+2. Vercel → datawithbijay2 → Settings → Environment Variables → add (or edit) these three as **Secret**:
+   `ADMIN_USERNAME`, `ADMIN_PASSWORD_HASH`, `ADMIN_SESSION_SECRET` → Save → Redeploy.
+   The password itself is never stored anywhere — only a one-way hash of it.
+3. Forgot the password? Just run step 1 again with a new one and replace the values.
+
+Safety: 5 wrong tries pause login for 15 minutes; the editor and its API refuse anyone without a valid login.
+Behind the login, the editor still saves through GitHub (that's how changes reach the site); you connect GitHub once
+and it stays connected.
 
 | In the editor | What it changes on the site | Saved in |
 |---|---|---|

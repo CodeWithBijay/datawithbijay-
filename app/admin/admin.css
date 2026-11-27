@@ -1,0 +1,37 @@
+/* Admin login page — same palette as the site: deep navy, mint and sky */
+:root{--a-bg:#061626;--a-card:#0b2238;--a-line:rgba(125,211,252,.22);--a-ink:#e6f1fb;--a-mut:#8fb0cc;--a-dim:#5f84a3;--a-mint:#5eead4;--a-sky:#7dd3fc;--a-red:#fb7185}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--a-bg);color:var(--a-ink);font:15px/1.5 Inter,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+.adm-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:40px 18px;position:relative;overflow:hidden}
+.adm-glow{position:absolute;inset:auto;width:720px;height:720px;border-radius:50%;background:radial-gradient(closest-side,rgba(94,234,212,.16),rgba(125,211,252,.06) 55%,transparent);top:50%;left:50%;transform:translate(-50%,-56%);pointer-events:none;animation:admPulse 8s ease-in-out infinite}
+@keyframes admPulse{50%{transform:translate(-50%,-56%) scale(1.08);opacity:.8}}
+.adm-card{position:relative;width:100%;max-width:410px;padding:58px 34px 26px;border-radius:20px;background:linear-gradient(180deg,rgba(14,40,64,.96),rgba(9,30,50,.96));
+  border:1px solid var(--a-line);box-shadow:0 30px 80px -30px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.05);backdrop-filter:blur(14px)}
+.adm-bot{position:absolute;top:-52px;left:50%;transform:translateX(-50%);width:96px;height:96px;border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(circle at 50% 40%,#123552,#0b2238);border:1px solid var(--a-line);box-shadow:0 0 0 6px var(--a-bg),0 10px 30px -8px rgba(94,234,212,.45)}
+.adm-bot img{width:70px;height:auto;margin-top:6px;animation:admFloat 3.4s ease-in-out infinite}
+@keyframes admFloat{50%{transform:translateY(-4px)}}
+.adm-kicker{margin:0;text-align:center;font:500 11px "JetBrains Mono",ui-monospace,monospace;letter-spacing:.08em;color:var(--a-mint)}
+.adm-card h1{margin:8px 0 6px;text-align:center;font:700 26px/1.2 "Space Grotesk",Inter,sans-serif;letter-spacing:-.01em}
+.adm-sub{margin:0 0 22px;text-align:center;color:var(--a-mut);font-size:14px}
+.adm-note{margin:0 0 16px;padding:10px 12px;border-radius:10px;font-size:13.5px}
+.adm-note.err{background:rgba(251,113,133,.1);border:1px solid rgba(251,113,133,.35);color:#fecdd3}
+.adm-note.ok{background:rgba(94,234,212,.08);border:1px solid rgba(94,234,212,.3);color:#ccfbf1}
+.adm-form{display:flex;flex-direction:column}
+.adm-form label{font:500 12px Inter,sans-serif;color:var(--a-mut);margin:0 0 6px;letter-spacing:.02em}
+.adm-form input{width:100%;height:46px;padding:0 14px;border-radius:12px;border:1px solid var(--a-line);background:rgba(6,22,38,.75);color:var(--a-ink);
+  font:15px Inter,sans-serif;outline:0;margin-bottom:16px;transition:border-color .2s,box-shadow .2s}
+.adm-form input::placeholder{color:var(--a-dim)}
+.adm-form input:focus{border-color:var(--a-mint);box-shadow:0 0 0 4px rgba(94,234,212,.14)}
+.adm-pw{position:relative}.adm-pw input{padding-right:48px}
+.adm-eye{position:absolute;right:6px;top:6px;width:34px;height:34px;border:0;border-radius:9px;background:none;color:var(--a-mut);cursor:pointer;display:grid;place-items:center}
+.adm-eye:hover{color:var(--a-mint);background:rgba(94,234,212,.08)}.adm-eye svg{width:19px;height:19px}
+.adm-btn{margin-top:6px;height:48px;border:0;border-radius:12px;cursor:pointer;font:600 15px Inter,sans-serif;color:#04211c;
+  background:linear-gradient(180deg,#7ff0dc,#4fd8c1);box-shadow:0 10px 28px -12px rgba(94,234,212,.8),inset 0 1px 0 rgba(255,255,255,.5);transition:transform .15s,box-shadow .2s,filter .2s}
+.adm-btn:hover{filter:brightness(1.05);box-shadow:0 14px 34px -12px rgba(94,234,212,.95),inset 0 1px 0 rgba(255,255,255,.5)}
+.adm-btn:active{transform:translateY(1px)}
+.adm-btn:focus-visible,.adm-eye:focus-visible,.adm-home:focus-visible{outline:2px solid var(--a-mint);outline-offset:3px}
+.adm-foot{display:flex;align-items:center;justify-content:center;gap:7px;margin:20px 0 0;font:11.5px "JetBrains Mono",ui-monospace,monospace;color:var(--a-dim)}
+.adm-foot svg{width:15px;height:15px;color:var(--a-mint)}
+.adm-home{position:relative;color:var(--a-mut);font-size:13px;text-decoration:none}.adm-home:hover{color:var(--a-mint)}
+@media (prefers-reduced-motion:reduce){.adm-glow,.adm-bot img{animation:none}}

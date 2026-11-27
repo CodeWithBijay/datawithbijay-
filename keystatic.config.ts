@@ -1,3 +1,4 @@
+import { createElement as h } from "react";
 import { config, fields, collection, singleton } from "@keystatic/core";
 
 // Keystatic: the content editor at /keystatic.
@@ -24,7 +25,14 @@ const entry = (what: string) =>
 export default config({
   storage: useGithub ? { kind: "github", repo: { owner: "CodeWithBijay", name: "datawithbijay-" } } : { kind: "local" },
   ui: {
-    brand: { name: "Bijay's site" },
+    // logo in the editor's top-left corner: a mint "BP" tile, like the site's accent
+    brand: {
+      name: "Bijay Paudel · Editor",
+      mark: () =>
+        h("svg", { width: 26, height: 26, viewBox: "0 0 26 26", "aria-hidden": true },
+          h("rect", { width: 26, height: 26, rx: 7, fill: "#5eead4" }),
+          h("text", { x: 13, y: 17.5, textAnchor: "middle", fontFamily: "Space Grotesk, Inter, sans-serif", fontWeight: 700, fontSize: 12, fill: "#04211c" }, "BP")),
+    },
     navigation: { Content: ["projects", "posts"], About: ["journey"] },
   },
 
