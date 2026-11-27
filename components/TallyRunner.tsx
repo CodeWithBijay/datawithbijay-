@@ -1,14 +1,15 @@
 "use client";
 // "Tally Runner": the little game on the 404 page.
-// Tally runs along a data pipeline and jumps over broken records (NULL, NaN, 404 …) and flying bugs.
+// Tally runs through a little forest and jumps over trees and flying birds.
 // Space / ↑ / click / tap to jump. Score = rows processed; the best score stays in this browser only.
 import { useEffect, useRef, useState } from "react";
 
-const W = 760, H = 240, GROUND = 196;            // game size in "game pixels" (scaled to fit the screen)
-const TW = 54, TH = 60;                          // Tally's size
-const BLOCKS = ["NULL", "NaN", "404", "ERR", "null", "#N/A", "DROP", "0/0"];
+const W = 760, H = 240, GROUND = 196;            // game size in "game units" (drawn sharp at any screen size)
+const TW = 54, TH = 60, TX = 62;                 // Tally's size and x position
+const STEP = 1000 / 120;                          // physics runs at a fixed 120 steps a second, drawing is smoothed between steps
 
-type Ob = { x: number; y: number; w: number; h: number; label: string; bug: boolean; flap: number };
+type Kind = "pine" | "round" | "bush" | "bird";
+type Ob = { kind: Kind; x: number; px: number; y: number; w: number; h: number; flap: number; hit: [number, number, number, number] };
 
 export default function TallyRunner() {
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -19,149 +20,302 @@ export default function TallyRunner() {
 
   useEffect(() => {
     const c = canvas.current!;
-    const ctx = c.getContext("2d")!;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    c.width = W * dpr; c.height = H * dpr; ctx.scale(dpr, dpr);
+    const ctx = c.getContext("2d", { alpha: true })!;
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    const img = (n: string) => { const i = new Image(); i.src = `/tally/${n}.webp`; return i; };
+    // Draw at the real on-screen size × screen density, so nothing is stretched or blurry.
+    let scale = 1, dpr = 1;
+    const fit = () => {
+      dpr = Math.min(window.devicePixelRatio || 1, 3);
+      const cssW = c.clientWidth || W;
+      scale = (cssW / W) * dpr;
+      c.width = Math.round(W * scale); c.height = Math.round(H * scale);
+      sprites = buildSprites();
+    };
+    const ro = new ResizeObserver(fit);
+
+    const img = (n: string) => { const i = new Image(); i.decoding = "async"; i.src = `/tally/${n}.webp`; return i; };
     const pose = { happy: img("happy"), neutral: img("neutral"), sad: img("sad") };
+
+    // ---------- trees: drawn once into small off-screen pictures, then just copied each frame ----------
+    const SIZES: Record<Exclude<Kind, "bird">, [number, number][]> = {
+      pine: [[34, 52], [40, 64], [30, 44]],
+      round: [[40, 50], [46, 58]],
+      bush: [[46, 28], [60, 32]],
+    };
+    type Sprite = { img: HTMLCanvasElement; w: number; h: number };
+    let sprites: Record<string, Sprite> = {};
+
+    const paintTree = (g: CanvasRenderingContext2D, kind: Exclude<Kind, "bird">, w: number, h: number) => {
+      const trunk = "#7c5a3e", trunkDark = "#5b412c";
+      if (kind === "pine") {
+        const tw = Math.max(6, w * 0.18);
+        g.fillStyle = trunkDark; g.fillRect(w / 2 - tw / 2, h - 12, tw, 12);
+        g.fillStyle = trunk; g.fillRect(w / 2 - tw / 2, h - 12, tw * 0.55, 12);
+        const layers = 3;
+        for (let i = 0; i < layers; i++) {
+          const top = (h - 10) * (i / layers) * 0.78;
+          const bot = top + (h - 10) * 0.48;
+          const half = (w / 2) * (0.55 + 0.45 * ((i + 1) / layers));
+          const grd = g.createLinearGradient(0, top, 0, bot);
+          grd.addColorStop(0, "#34d399"); grd.addColorStop(1, "#0f766e");
+          g.fillStyle = grd;
+          g.beginPath(); g.moveTo(w / 2, top); g.lineTo(w / 2 + half, bot); g.quadraticCurveTo(w / 2, bot + 4, w / 2 - half, bot); g.closePath(); g.fill();
+          g.fillStyle = "rgba(255,255,255,.14)";
+          g.beginPath(); g.moveTo(w / 2, top + 2); g.lineTo(w / 2 - half * 0.7, bot - 2); g.lineTo(w / 2 - half * 0.2, bot - 3); g.closePath(); g.fill();
+        }
+      } else if (kind === "round") {
+        const tw = Math.max(7, w * 0.17);
+        g.fillStyle = trunkDark; g.fillRect(w / 2 - tw / 2, h * 0.5, tw, h * 0.5);
+        g.fillStyle = trunk; g.fillRect(w / 2 - tw / 2, h * 0.5, tw * 0.55, h * 0.5);
+        const r = w * 0.36;
+        const blobs: [number, number, number][] = [[w / 2, r + 1, r], [w / 2 - r * 0.62, r * 1.55, r * 0.72], [w / 2 + r * 0.62, r * 1.5, r * 0.76]];
+        for (const [x, y, rr] of blobs) {
+          const grd = g.createRadialGradient(x - rr * 0.35, y - rr * 0.4, rr * 0.1, x, y, rr);
+          grd.addColorStop(0, "#6ee7b7"); grd.addColorStop(0.55, "#14b8a6"); grd.addColorStop(1, "#0f5f59");
+          g.fillStyle = grd; g.beginPath(); g.arc(x, y, rr, 0, Math.PI * 2); g.fill();
+        }
+      } else {
+        const n = w > 50 ? 4 : 3;
+        for (let i = 0; i < n; i++) {
+          const rr = h * (0.5 + ((i * 37) % 10) / 40);
+          const x = rr + (i * (w - rr * 2)) / (n - 1);
+          const y = h - rr * 0.85;
+          const grd = g.createRadialGradient(x - rr * 0.3, y - rr * 0.4, 1, x, y, rr);
+          grd.addColorStop(0, "#5eead4"); grd.addColorStop(1, "#0f766e");
+          g.fillStyle = grd; g.beginPath(); g.arc(x, y, rr, Math.PI, 0); g.lineTo(x + rr, h); g.lineTo(x - rr, h); g.closePath(); g.fill();
+        }
+      }
+    };
+
+    const buildSprites = () => {
+      const out: Record<string, Sprite> = {};
+      for (const kind of Object.keys(SIZES) as Exclude<Kind, "bird">[]) {
+        SIZES[kind].forEach(([w, h], i) => {
+          const cv = document.createElement("canvas");
+          cv.width = Math.ceil(w * scale); cv.height = Math.ceil(h * scale);
+          const g = cv.getContext("2d")!; g.scale(scale, scale);
+          paintTree(g, kind, w, h);
+          out[`${kind}${i}`] = { img: cv, w, h };
+        });
+      }
+      return out;
+    };
+
+    // ---------- distant hills + clouds for depth ----------
+    const hills = Array.from({ length: 7 }, (_, i) => ({ x: i * 150 + Math.random() * 60, r: 70 + Math.random() * 60 }));
+    const clouds = Array.from({ length: 5 }, () => ({ x: Math.random() * W, y: 26 + Math.random() * 70, s: 0.7 + Math.random() * 0.6 }));
+    const grass = Array.from({ length: 40 }, (_, i) => ({ x: i * 19 + Math.random() * 10, h: 3 + Math.random() * 4 }));
 
     let bestScore = 0;
     try { bestScore = Number(localStorage.getItem("tally-runner-best")) || 0; } catch {}
     setBest(bestScore);
 
     let mode: "ready" | "running" | "over" = "ready";
-    let y = GROUND - TH, vy = 0, onGround = true;
-    let speed = 6, dist = 0, t = 0, nextGap = 300, obs: Ob[] = [], bits: { x: number; y: number; s: string; v: number }[] = [];
-    let raf = 0, last = 0, shown = -1, cheer = 0;
+    let y = GROUND - TH, py = y, vy = 0, onGround = true, holding = false;
+    let speed = 3, dist = 0, pdist = 0, t = 0, nextGap = 300, obs: Ob[] = [];
+    let raf = 0, last = 0, acc = 0, cheer = 0, squash = 0;
 
-    for (let i = 0; i < 14; i++) bits.push({ x: Math.random() * W, y: 18 + Math.random() * 120, s: Math.random() < 0.5 ? "0" : "1", v: 0.15 + Math.random() * 0.5 });
-
-    const reset = () => { y = GROUND - TH; vy = 0; onGround = true; speed = 6; dist = 0; nextGap = 320; obs = []; cheer = 0; };
+    const reset = () => { y = py = GROUND - TH; vy = 0; onGround = true; speed = 3; dist = pdist = 0; nextGap = 320; obs = []; cheer = 0; };
     const jump = () => {
       if (mode === "ready" || mode === "over") { reset(); mode = "running"; setState("running"); return; }
-      if (onGround) { vy = -12.6; onGround = false; }
+      if (onGround) { vy = -7.2; onGround = false; holding = true; }
     };
+    const release = () => { holding = false; };
     api.current.jump = jump;
 
     const spawn = () => {
-      const bug = dist > 1400 && Math.random() < 0.28;
-      if (bug) {
+      const bird = dist > 1500 && Math.random() < 0.3;
+      if (bird) {
         const high = Math.random() < 0.5;
-        obs.push({ x: W + 20, y: high ? GROUND - 112 : GROUND - 74, w: 34, h: 22, label: "bug", bug: true, flap: 0 });
+        const by = high ? GROUND - 104 : GROUND - 70;
+        obs.push({ kind: "bird", x: W + 30, px: W + 30, y: by, w: 40, h: 26, flap: Math.random() * 6, hit: [6, 6, 30, 14] });
       } else {
-        const label = BLOCKS[(Math.random() * BLOCKS.length) | 0];
-        const tall = Math.random() < 0.35;
-        const w = Math.max(38, label.length * 10 + 16), h = tall ? 46 : 32;
-        obs.push({ x: W + 20, y: GROUND - h, w, h, label, bug: false, flap: 0 });
-        if (dist > 900 && Math.random() < 0.25) obs.push({ x: W + 24 + w, y: GROUND - 30, w: 36, h: 30, label: "NaN", bug: false, flap: 0 });
-      }
-      nextGap = 230 + Math.random() * 260 + speed * 14;
-    };
-
-    const rr = (x: number, yy: number, w: number, h: number, r: number) => {
-      ctx.beginPath(); ctx.moveTo(x + r, yy); ctx.arcTo(x + w, yy, x + w, yy + h, r); ctx.arcTo(x + w, yy + h, x, yy + h, r);
-      ctx.arcTo(x, yy + h, x, yy, r); ctx.arcTo(x, yy, x + w, yy, r); ctx.closePath();
-    };
-
-    const draw = () => {
-      ctx.clearRect(0, 0, W, H);
-      // floating data bits (slow parallax)
-      ctx.font = "12px 'JetBrains Mono', ui-monospace, monospace";
-      for (const b of bits) { ctx.fillStyle = "rgba(125,211,252,.18)"; ctx.fillText(b.s, b.x, b.y); }
-      // ground: the pipeline
-      ctx.strokeStyle = "rgba(125,211,252,.45)"; ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.moveTo(0, GROUND + 0.5); ctx.lineTo(W, GROUND + 0.5); ctx.stroke();
-      ctx.strokeStyle = "rgba(94,234,212,.35)"; ctx.setLineDash([10, 14]); ctx.lineDashOffset = dist % 24;
-      ctx.beginPath(); ctx.moveTo(0, GROUND + 14); ctx.lineTo(W, GROUND + 14); ctx.stroke(); ctx.setLineDash([]);
-      // obstacles
-      for (const o of obs) {
-        if (o.bug) {
-          const wing = Math.sin(o.flap) * 5;
-          ctx.fillStyle = "#fb7185";
-          ctx.beginPath(); ctx.ellipse(o.x + 17, o.y + 12, 11, 8, 0, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = "rgba(251,113,133,.45)";
-          ctx.beginPath(); ctx.ellipse(o.x + 11, o.y + 4 - wing, 8, 4, -0.5, 0, Math.PI * 2); ctx.fill();
-          ctx.beginPath(); ctx.ellipse(o.x + 23, o.y + 4 - wing, 8, 4, 0.5, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = "#061626"; ctx.fillRect(o.x + 9, o.y + 10, 3, 3); ctx.fillRect(o.x + 15, o.y + 9, 3, 3);
-        } else {
-          rr(o.x, o.y, o.w, o.h, 6);
-          ctx.fillStyle = "#1b1530"; ctx.fill();
-          ctx.strokeStyle = "#fbbf24"; ctx.lineWidth = 1.5; ctx.stroke();
-          ctx.fillStyle = "#fbbf24"; ctx.font = "600 12px 'JetBrains Mono', ui-monospace, monospace"; ctx.textAlign = "center";
-          ctx.fillText(o.label, o.x + o.w / 2, o.y + o.h / 2 + 4); ctx.textAlign = "start";
+        const r = Math.random();
+        const kind: Exclude<Kind, "bird"> = r < 0.45 ? "pine" : r < 0.75 ? "round" : "bush";
+        const i = (Math.random() * SIZES[kind].length) | 0;
+        const [w, h] = SIZES[kind][i];
+        const hit: [number, number, number, number] = kind === "bush" ? [5, 6, w - 10, h - 6] : [w * 0.2, 6, w * 0.6, h - 6];
+        obs.push({ kind, x: W + 30, px: W + 30, y: GROUND - h, w, h, flap: i, hit });
+        if (dist > 900 && kind !== "bush" && Math.random() < 0.28) {
+          const [w2, h2] = SIZES.pine[2];
+          obs.push({ kind: "pine", x: W + 34 + w, px: W + 34 + w, y: GROUND - h2, w: w2, h: h2, flap: 2, hit: [w2 * 0.2, 6, w2 * 0.6, h2 - 6] });
         }
       }
-      // Tally (a soft shadow, then the sprite; little bob while running)
-      const bob = mode === "running" && onGround && !reduce ? Math.sin(t / 3) * 1.5 : 0;
-      const shadowW = onGround ? 34 : Math.max(16, 34 - (GROUND - TH - y) / 4);
-      ctx.fillStyle = "rgba(0,0,0,.35)"; ctx.beginPath(); ctx.ellipse(62 + TW / 2, GROUND + 3, shadowW / 2, 4, 0, 0, Math.PI * 2); ctx.fill();
+      nextGap = 260 + Math.random() * 280 + speed * 16;
+    };
+
+    // one fixed physics step (units are per 1/120 s)
+    const tick = () => {
+      t++;
+      for (const cl of clouds) { cl.x -= (mode === "running" ? speed * 0.06 : 0.12); if (cl.x < -80) { cl.x = W + 40; cl.y = 26 + Math.random() * 70; } }
+      if (mode !== "running") return;
+      pdist = dist; py = y;
+      for (const o of obs) o.px = o.x;
+      dist += speed; speed = Math.min(7.5, 3 + dist / 5200);
+      vy += holding && vy < 0 ? 0.2 : 0.34;      // hold to jump a bit higher
+      y += vy;
+      if (y >= GROUND - TH) { if (!onGround) squash = 1; y = GROUND - TH; vy = 0; onGround = true; }
+      nextGap -= speed; if (nextGap <= 0) spawn();
+      for (const o of obs) { o.x -= speed * (o.kind === "bird" ? 1.15 : 1); o.flap += o.kind === "bird" ? 0.16 : 0; }
+      obs = obs.filter((o) => o.x + o.w > -30);
+      if (cheer > 0) cheer--;
+      if (squash > 0) squash = Math.max(0, squash - 0.08);
+      const s = Math.floor(dist / 10);
+      if (s && s % 500 === 0 && cheer <= 0) cheer = 80;
+      // forgiving hit box: Tally's body, not the see-through edges of the picture
+      const hx = TX + 11, hy = y + 9, hw = TW - 22, hh = TH - 13;
+      for (const o of obs) {
+        const ox = o.x + o.hit[0], oy = o.y + o.hit[1];
+        if (hx < ox + o.hit[2] && hx + hw > ox && hy < oy + o.hit[3] && hy + hh > oy) {
+          mode = "over"; setState("over");
+          const final = Math.floor(dist / 10);
+          setScore(final);
+          if (final > bestScore) { bestScore = final; setBest(final); try { localStorage.setItem("tally-runner-best", String(final)); } catch {} }
+          pdist = dist; py = y; for (const q of obs) q.px = q.x;
+          break;
+        }
+      }
+    };
+
+    const drawBird = (x: number, yy: number, flap: number) => {
+      const wing = Math.sin(flap);                       // -1 … 1
+      ctx.save(); ctx.translate(x, yy);
+      // back wing
+      ctx.fillStyle = "#94a3b8";
+      ctx.beginPath(); ctx.moveTo(18, 12); ctx.quadraticCurveTo(24, 12 - wing * 14, 30, 10 - wing * 12); ctx.quadraticCurveTo(26, 14, 22, 15); ctx.closePath(); ctx.fill();
+      // body
+      const grd = ctx.createLinearGradient(0, 6, 0, 22);
+      grd.addColorStop(0, "#e2e8f0"); grd.addColorStop(1, "#94a3b8");
+      ctx.fillStyle = grd;
+      ctx.beginPath(); ctx.ellipse(20, 15, 14, 7.5, -0.08, 0, Math.PI * 2); ctx.fill();
+      // tail
+      ctx.beginPath(); ctx.moveTo(32, 13); ctx.lineTo(40, 9); ctx.lineTo(39, 17); ctx.closePath(); ctx.fill();
+      // head + beak + eye
+      ctx.beginPath(); ctx.arc(8, 11, 6.5, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#fbbf24"; ctx.beginPath(); ctx.moveTo(2, 10); ctx.lineTo(-5, 12.5); ctx.lineTo(2, 14); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = "#0b1e33"; ctx.beginPath(); ctx.arc(6.5, 9.5, 1.6, 0, Math.PI * 2); ctx.fill();
+      // front wing
+      ctx.fillStyle = "#cbd5e1";
+      ctx.beginPath(); ctx.moveTo(14, 13); ctx.quadraticCurveTo(20, 13 - wing * 16, 27, 11 - wing * 15); ctx.quadraticCurveTo(24, 16, 18, 17); ctx.closePath(); ctx.fill();
+      ctx.restore();
+    };
+
+    const draw = (a: number) => {
+      ctx.setTransform(scale, 0, 0, scale, 0, 0);
+      ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
+      ctx.clearRect(0, 0, W, H);
+      const d = pdist + (dist - pdist) * a;           // smoothed between physics steps
+
+      // clouds
+      for (const cl of clouds) {
+        ctx.fillStyle = "rgba(186,230,253,.07)";
+        ctx.beginPath();
+        ctx.ellipse(cl.x, cl.y, 26 * cl.s, 9 * cl.s, 0, 0, Math.PI * 2);
+        ctx.ellipse(cl.x + 16 * cl.s, cl.y - 6 * cl.s, 16 * cl.s, 9 * cl.s, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      // far hills (slow)
+      ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, GROUND); ctx.clip();
+      ctx.fillStyle = "rgba(20,184,166,.05)";
+      const span = 7 * 150;
+      for (const hl of hills) {
+        let hx = (hl.x - d * 0.15) % span; if (hx < -hl.r) hx += span;
+        ctx.beginPath(); ctx.arc(hx, GROUND + 20, hl.r, Math.PI, 0); ctx.fill();
+      }
+      ctx.restore();
+      // ground
+      const gg = ctx.createLinearGradient(0, GROUND, 0, H);
+      gg.addColorStop(0, "rgba(20,184,166,.18)"); gg.addColorStop(1, "rgba(20,184,166,0)");
+      ctx.fillStyle = gg; ctx.fillRect(0, GROUND, W, H - GROUND);
+      ctx.strokeStyle = "rgba(94,234,212,.55)"; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(0, GROUND + 0.75); ctx.lineTo(W, GROUND + 0.75); ctx.stroke();
+      // grass tufts + pebbles scrolling with the ground
+      const gspan = 40 * 19;
+      ctx.strokeStyle = "rgba(94,234,212,.22)"; ctx.lineWidth = 1.1; ctx.lineCap = "round";
+      for (const gr of grass) {
+        let gx = (gr.x - d) % gspan; if (gx < 0) gx += gspan;
+        ctx.beginPath(); ctx.moveTo(gx, GROUND + 9); ctx.lineTo(gx - 2, GROUND + 9 - gr.h); ctx.moveTo(gx, GROUND + 9); ctx.lineTo(gx + 2, GROUND + 9 - gr.h * 0.8); ctx.stroke();
+        ctx.fillStyle = "rgba(125,211,252,.18)"; ctx.beginPath(); ctx.arc((gx + 9) % gspan, GROUND + 22, 1.4, 0, Math.PI * 2); ctx.fill();
+      }
+
+      // obstacles
+      for (const o of obs) {
+        const ox = o.px + (o.x - o.px) * a;
+        if (o.kind === "bird") {
+          ctx.fillStyle = "rgba(0,0,0,.18)"; ctx.beginPath(); ctx.ellipse(ox + 20, GROUND + 3, 12, 2.5, 0, 0, Math.PI * 2); ctx.fill();
+          drawBird(ox, o.y + Math.sin(o.flap * 0.5) * 2, reduce ? 0.6 : o.flap);
+        } else {
+          const sp = sprites[`${o.kind}${o.flap}`];
+          ctx.fillStyle = "rgba(0,0,0,.28)"; ctx.beginPath(); ctx.ellipse(ox + o.w / 2, GROUND + 2, o.w * 0.42, 3, 0, 0, Math.PI * 2); ctx.fill();
+          if (sp) ctx.drawImage(sp.img, ox, o.y, sp.w, sp.h);
+        }
+      }
+
+      // Tally: soft shadow, a little bob while running, a squash on landing
+      const ty = py + (y - py) * a;
+      const air = GROUND - TH - ty;
+      const bob = mode === "running" && onGround && !reduce ? Math.sin(t / 7) * 1.4 : 0;
+      const sw = Math.max(14, 34 - air / 3);
+      ctx.fillStyle = `rgba(0,0,0,${Math.max(0.12, 0.35 - air / 300)})`;
+      ctx.beginPath(); ctx.ellipse(TX + TW / 2, GROUND + 3, sw / 2, 4, 0, 0, Math.PI * 2); ctx.fill();
       const sprite = mode === "over" ? pose.sad : !onGround || cheer > 0 ? pose.happy : pose.neutral;
-      if (sprite.complete && sprite.naturalWidth) ctx.drawImage(sprite, 62, y + bob, TW, TH);
-      else { ctx.fillStyle = "#5eead4"; rr(62, y, TW, TH, 12); ctx.fill(); }
-      // HUD
+      const sq = reduce ? 0 : squash * 0.08;
+      const dw = TW * (1 + sq), dh = TH * (1 - sq);
+      if (sprite.complete && sprite.naturalWidth) ctx.drawImage(sprite, TX - (dw - TW) / 2, ty + bob + (TH - dh), dw, dh);
+      else { ctx.fillStyle = "#5eead4"; ctx.beginPath(); ctx.roundRect(TX, ty, TW, TH, 12); ctx.fill(); }
+
+      // score
       ctx.font = "500 12px 'JetBrains Mono', ui-monospace, monospace"; ctx.textAlign = "right";
       ctx.fillStyle = "rgba(143,176,204,.9)"; ctx.fillText(`best ${String(bestScore).padStart(5, "0")}`, W - 16, 24);
-      ctx.fillStyle = "#5eead4"; ctx.fillText(`rows ${String(Math.floor(dist / 10)).padStart(5, "0")}`, W - 16, 42);
+      ctx.fillStyle = "#5eead4"; ctx.fillText(`rows ${String(Math.floor(d / 10)).padStart(5, "0")}`, W - 16, 42);
       ctx.textAlign = "start";
     };
 
-    const step = (now: number) => {
-      raf = requestAnimationFrame(step);
-      const k = last ? Math.min(2.2, (now - last) / 16.67) : 1; // steady speed on 60 Hz and 120 Hz screens
-      last = now; t += k;
-      for (const b of bits) { b.x -= b.v * (mode === "running" ? speed / 6 : 0.4) * k; if (b.x < -10) { b.x = W + 10; b.y = 18 + Math.random() * 120; } }
-      if (mode === "running") {
-        dist += speed * k; speed = Math.min(15, 6 + dist / 2600);
-        vy += 0.68 * k; y += vy * k;
-        if (y >= GROUND - TH) { y = GROUND - TH; vy = 0; onGround = true; }
-        nextGap -= speed * k; if (nextGap <= 0) spawn();
-        for (const o of obs) { o.x -= speed * k * (o.bug ? 1.12 : 1); o.flap += 0.45 * k; }
-        obs = obs.filter((o) => o.x + o.w > -20);
-        if (cheer > 0) cheer -= k;
-        const s = Math.floor(dist / 10);
-        if (s && s % 500 === 0 && cheer <= 0) cheer = 40;
-        // forgiving hit box: Tally's body, not the transparent edges of the picture
-        const hx = 62 + 10, hy = y + 8, hw = TW - 20, hh = TH - 12;
-        if (obs.some((o) => hx < o.x + o.w - 3 && hx + hw > o.x + 3 && hy < o.y + o.h - 2 && hy + hh > o.y + 3)) {
-          mode = "over"; setState("over");
-          const final = Math.floor(dist / 10);
-          if (final > bestScore) { bestScore = final; setBest(final); try { localStorage.setItem("tally-runner-best", String(final)); } catch {} }
-        }
-        const sc = Math.floor(dist / 10);
-        if (sc !== shown) { shown = sc; setScore(sc); }
-      }
-      draw();
+    const frame = (now: number) => {
+      raf = requestAnimationFrame(frame);
+      if (!last) last = now;
+      acc += Math.min(100, now - last); last = now;  // after a tab switch, don't jump ahead
+      while (acc >= STEP) { tick(); acc -= STEP; }
+      draw(acc / STEP);
     };
-    raf = requestAnimationFrame(step);
 
-    const key = (e: KeyboardEvent) => {
-      if (e.code === "Space" || e.code === "ArrowUp" || e.code === "KeyW") {
-        const tag = (e.target as HTMLElement)?.tagName;
-        if (tag === "A" || tag === "BUTTON" || tag === "INPUT") return;
-        e.preventDefault(); jump();
-      }
+    fit(); ro.observe(c);
+    raf = requestAnimationFrame(frame);
+    const onVis = () => { last = 0; acc = 0; };
+    document.addEventListener("visibilitychange", onVis);
+
+    const isJumpKey = (e: KeyboardEvent) => e.code === "Space" || e.code === "ArrowUp" || e.code === "KeyW";
+    const keydown = (e: KeyboardEvent) => {
+      if (!isJumpKey(e)) return;
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === "A" || tag === "BUTTON" || tag === "INPUT" || tag === "TEXTAREA") return;
+      e.preventDefault(); if (!e.repeat) jump();
     };
-    addEventListener("keydown", key);
-    return () => { cancelAnimationFrame(raf); removeEventListener("keydown", key); };
+    const keyup = (e: KeyboardEvent) => { if (isJumpKey(e)) release(); };
+    addEventListener("keydown", keydown); addEventListener("keyup", keyup); addEventListener("pointerup", release);
+    return () => {
+      cancelAnimationFrame(raf); ro.disconnect();
+      document.removeEventListener("visibilitychange", onVis);
+      removeEventListener("keydown", keydown); removeEventListener("keyup", keyup); removeEventListener("pointerup", release);
+    };
   }, []);
 
   return (
     <div className="tr">
       <div className="tr-stage" onPointerDown={(e) => { e.preventDefault(); api.current.jump(); }}>
-        <canvas ref={canvas} className="tr-canvas" role="img" aria-label="Tally Runner: help Tally the robot jump over broken records. Press Space, the up arrow, or tap to jump." />
+        <canvas ref={canvas} className="tr-canvas" role="img" aria-label="Tally Runner: help Tally the robot jump over trees and birds. Press Space, the up arrow, or tap to jump." />
         {state !== "running" && (
           <div className="tr-overlay" aria-live="polite">
             {state === "ready" ? (
               <>
                 <b>Tally Runner</b>
-                <span>Help Tally jump over the broken records</span>
-                <kbd>Space</kbd><em>or tap to start</em>
+                <span>Help Tally jump over the trees and dodge the birds</span>
+                <kbd>Space</kbd><em>or tap to start · hold to jump higher</em>
               </>
             ) : (
               <>
-                <b>Query failed 💥</b>
+                <b>Oops, Tally tripped! 🌳</b>
                 <span>{score.toLocaleString()} rows processed{score >= best && score > 0 ? " · new best! 🎉" : ""}</span>
                 <kbd>Space</kbd><em>or tap to retry</em>
               </>
