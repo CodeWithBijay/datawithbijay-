@@ -115,8 +115,10 @@ export default function TallyRunner() {
     let y = GROUND - TH, py = y, vy = 0, onGround = true, holding = false;
     let speed = 3, dist = 0, pdist = 0, t = 0, nextGap = 300, obs: Ob[] = [];
     let raf = 0, last = 0, acc = 0, cheer = 0, squash = 0;
+    // face: where the eyes look (smoothed), blinking, and how close the next tree or bird is
+    let lookX = 0.6, lookY = 0, blink = 0, nextBlink = 300, alarm = 0, dizzy = 0;
 
-    const reset = () => { y = py = GROUND - TH; vy = 0; onGround = true; speed = 3; dist = pdist = 0; nextGap = 320; obs = []; cheer = 0; };
+    const reset = () => { y = py = GROUND - TH; vy = 0; onGround = true; speed = 3; dist = pdist = 0; nextGap = 320; obs = []; cheer = 0; dizzy = 0; };
     const jump = () => {
       if (mode === "ready" || mode === "over") { reset(); mode = "running"; setState("running"); return; }
       if (onGround) { vy = -7.2; onGround = false; holding = true; }
@@ -149,6 +151,22 @@ export default function TallyRunner() {
     const tick = () => {
       t++;
       for (const cl of clouds) { cl.x -= (mode === "running" ? speed * 0.06 : 0.12); if (cl.x < -80) { cl.x = W + 40; cl.y = 26 + Math.random() * 70; } }
+      // --- face: blink now and then, eyes follow the next obstacle ---
+      if (--nextBlink <= 0) { blink = 14; nextBlink = 260 + Math.random() * 420; }
+      if (blink > 0) blink--;
+      if (mode === "over") dizzy += 0.06;
+      let tx = 0.6, tyy = 0, near = 0;
+      if (mode === "ready") { tx = Math.sin(t / 140) * 0.9; tyy = Math.sin(t / 97) * 0.3; }
+      if (mode === "running") {
+        const front = obs.filter((o) => o.x + o.w > TX + 10).sort((a, b) => a.x - b.x)[0];
+        if (front) {
+          const gap = front.x - (TX + TW);
+          near = Math.max(0, Math.min(1, 1 - gap / 170));
+          tx = 0.4 + near * 0.6;
+          tyy = front.kind === "bird" ? (front.y + 12 < y + 20 ? -0.8 : -0.1) : 0.5 * near;
+        }
+      }
+      lookX += (tx - lookX) * 0.12; lookY += (tyy - lookY) * 0.12; alarm += (near - alarm) * 0.15;
       if (mode !== "running") return;
       pdist = dist; py = y;
       for (const o of obs) o.px = o.x;
@@ -198,6 +216,59 @@ export default function TallyRunner() {
       // front wing
       ctx.fillStyle = "#cbd5e1";
       ctx.beginPath(); ctx.moveTo(14, 13); ctx.quadraticCurveTo(20, 13 - wing * 16, 27, 11 - wing * 15); ctx.quadraticCurveTo(24, 16, 18, 17); ctx.closePath(); ctx.fill();
+      ctx.restore();
+    };
+
+    // Tally's face, drawn on the dark visor of the picture (same style as the Tally on the rest of the site)
+    const EYE = "#e8fffb", PUPIL = "#0b2238", MINT = "#5eead4";
+    const drawFace = (x: number, yy: number, sx: number, sy: number) => {
+      ctx.save();
+      ctx.translate(x + 25.3 * sx, yy + 18.6 * sy); ctx.scale(sx, sy);
+      const ex = 6.4, ey = -1.6;
+      const air = !onGround && mode === "running";
+      const happy = (air && alarm < 0.5) || cheer > 0;
+      ctx.lineCap = "round"; ctx.lineJoin = "round";
+      if (mode === "over") {
+        // dizzy: spiral-ish X eyes, wobbly frown, a tear
+        ctx.strokeStyle = EYE; ctx.lineWidth = 1.6;
+        for (const s of [-1, 1]) {
+          ctx.save(); ctx.translate(s * ex, ey); ctx.rotate(dizzy * s);
+          ctx.beginPath(); ctx.moveTo(-2.8, -2.8); ctx.lineTo(2.8, 2.8); ctx.moveTo(2.8, -2.8); ctx.lineTo(-2.8, 2.8); ctx.stroke();
+          ctx.restore();
+        }
+        ctx.strokeStyle = MINT; ctx.lineWidth = 1.4;
+        ctx.beginPath(); ctx.moveTo(-3.5, 8); ctx.quadraticCurveTo(-1.5, 5.6, 0, 7); ctx.quadraticCurveTo(1.5, 8.4, 3.5, 6.2); ctx.stroke();
+        ctx.fillStyle = "#7dd3fc"; ctx.beginPath(); ctx.ellipse(ex + 1, ey + 6 + (dizzy * 3) % 4, 1, 1.5, 0, 0, Math.PI * 2); ctx.fill();
+      } else if (happy) {
+        // ^ ^ happy eyes, big smile, blush
+        ctx.strokeStyle = EYE; ctx.lineWidth = 1.9;
+        for (const s of [-1, 1]) { ctx.beginPath(); ctx.moveTo(s * ex - 3.4, ey + 1.2); ctx.quadraticCurveTo(s * ex, ey - 3.6, s * ex + 3.4, ey + 1.2); ctx.stroke(); }
+        ctx.fillStyle = MINT; ctx.beginPath(); ctx.moveTo(-3.6, 5.2); ctx.quadraticCurveTo(0, 10.5, 3.6, 5.2); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = "rgba(251,113,133,.45)";
+        ctx.beginPath(); ctx.ellipse(-ex - 2.6, ey + 4.2, 2.2, 1.2, 0, 0, Math.PI * 2); ctx.ellipse(ex + 2.6, ey + 4.2, 2.2, 1.2, 0, 0, Math.PI * 2); ctx.fill();
+      } else {
+        // open eyes that track the next tree or bird; they widen as it gets close
+        const wide = 1 + alarm * 0.22;
+        const open = blink > 0 ? Math.max(0.1, Math.abs(blink - 7) / 7) : 1;
+        for (const s of [-1, 1]) {
+          ctx.save(); ctx.translate(s * ex, ey); ctx.scale(wide, wide * open);
+          ctx.fillStyle = EYE; ctx.beginPath(); ctx.ellipse(0, 0, 3.7, 4.2, 0, 0, Math.PI * 2); ctx.fill();
+          const pr = 2.6 - alarm * 0.7;                // pupils shrink a little when scared
+          const px = lookX * 1.1, pyy = lookY * 1.2;
+          ctx.fillStyle = PUPIL; ctx.beginPath(); ctx.ellipse(px, pyy, pr, pr * 1.15, 0, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(px - 0.9, pyy - 1.3, 0.95, 0, Math.PI * 2); ctx.fill();
+          ctx.restore();
+        }
+        if (alarm > 0.45) {
+          // worried brows + small "o" mouth
+          ctx.strokeStyle = EYE; ctx.lineWidth = 1.1;
+          for (const s of [-1, 1]) { ctx.beginPath(); ctx.moveTo(s * ex - s * 3, ey - 6.4); ctx.lineTo(s * ex + s * 2.6, ey - 5.2 - alarm); ctx.stroke(); }
+          ctx.fillStyle = MINT; ctx.beginPath(); ctx.ellipse(0, 7, 1.5, 1.2 + alarm * 1.1, 0, 0, Math.PI * 2); ctx.fill();
+        } else {
+          ctx.strokeStyle = MINT; ctx.lineWidth = 1.3;
+          ctx.beginPath(); ctx.moveTo(-2.4, 6.4); ctx.quadraticCurveTo(0, 8.2, 2.4, 6.4); ctx.stroke();
+        }
+      }
       ctx.restore();
     };
 
@@ -259,11 +330,12 @@ export default function TallyRunner() {
       const sw = Math.max(14, 34 - air / 3);
       ctx.fillStyle = `rgba(0,0,0,${Math.max(0.12, 0.35 - air / 300)})`;
       ctx.beginPath(); ctx.ellipse(TX + TW / 2, GROUND + 3, sw / 2, 4, 0, 0, Math.PI * 2); ctx.fill();
-      const sprite = mode === "over" ? pose.sad : !onGround || cheer > 0 ? pose.happy : pose.neutral;
+      const sprite = mode === "over" ? pose.sad : cheer > 0 ? pose.happy : pose.neutral;
       const sq = reduce ? 0 : squash * 0.08;
       const dw = TW * (1 + sq), dh = TH * (1 - sq);
       if (sprite.complete && sprite.naturalWidth) ctx.drawImage(sprite, TX - (dw - TW) / 2, ty + bob + (TH - dh), dw, dh);
       else { ctx.fillStyle = "#5eead4"; ctx.beginPath(); ctx.roundRect(TX, ty, TW, TH, 12); ctx.fill(); }
+      drawFace(TX - (dw - TW) / 2, ty + bob + (TH - dh), dw / TW, dh / TH);
 
       // score
       ctx.font = "500 12px 'JetBrains Mono', ui-monospace, monospace"; ctx.textAlign = "right";
