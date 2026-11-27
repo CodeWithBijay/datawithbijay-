@@ -37,7 +37,8 @@ const editorCsp = [
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' data: https://fonts.gstatic.com",
   "img-src 'self' data: blob: https://avatars.githubusercontent.com https://raw.githubusercontent.com",
-  "connect-src 'self' https://api.github.com",
+  // api.github.com lists files and saves commits; raw.githubusercontent.com is where file contents are downloaded from
+  "connect-src 'self' https://api.github.com https://raw.githubusercontent.com",
   "form-action 'self' https://github.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
