@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { FACTS, RULES, JD_RULES } from "@/lib/pixelBrain";
 import { db } from "@/lib/db";
+import { allow, clientKey } from "@/lib/ratelimit";
 
 // Tally's answers. Newer Gemini models spend part of maxOutputTokens on hidden "thinking", so the limit is generous;
 // the RULES keep the visible answer short.
@@ -10,7 +11,6 @@ const MODEL = process.env.GEMINI_MODEL || "gemini-3.5-flash";
 // backups when the main model is busy (set GEMINI_FALLBACKS="model-a,model-b" in Vercel to change them)
 const FALLBACKS = (process.env.GEMINI_FALLBACKS || "gemini-3.1-flash-lite,gemini-3.5-flash").split(",").map((s) => s.trim()).filter(Boolean);
 export const maxDuration = 60;
-const hits = new Map<string, number[]>(); // tiny per-IP limit: 20 questions / 10 min
 
 type Turn = { role: "visitor" | "pixel"; text: string };
 
@@ -29,11 +29,11 @@ const TOPICS: [string, RegExp][] = [
 const topicOf = (q: string, mode: string) => (mode === "jd" ? "job description match" : TOPICS.find(([, r]) => r.test(q))?.[0] || "other");
 
 export async function POST(req: Request) {
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() || "local";
-  const now = Date.now();
-  const recent = (hits.get(ip) || []).filter((t) => now - t < 10 * 60_000);
-  if (recent.length >= 20) return NextResponse.json({ error: "slow down" }, { status: 429 });
-  hits.set(ip, [...recent, now]);
+  // 20 questions per 10 minutes per visitor, plus 500 a day for the whole site so the Gemini bill can't run away
+  // (counts kept in Neon, see lib/ratelimit.ts; change CHAT_DAILY_CAP in Vercel to adjust the daily cap)
+  const who = clientKey(req), daily = Number(process.env.CHAT_DAILY_CAP) || 500;
+  if (!(await allow("chat", who, 20, 600)) || !(await allow("chat-all", "all", daily, 86400)))
+    return NextResponse.json({ error: "slow down" }, { status: 429 });
 
   let body: { question?: unknown; history?: unknown; mode?: unknown; nostats?: unknown };
   try { body = await req.json(); } catch { return NextResponse.json({ error: "bad request" }, { status: 400 }); }

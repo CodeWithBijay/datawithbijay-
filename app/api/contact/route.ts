@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { allow, clientKey } from "@/lib/ratelimit";
 
 // Contact form → your inbox, with no form service in between.
 // 1. Spam checks run here on the server (bots can't skip them).
@@ -11,7 +12,6 @@ import { db } from "@/lib/db";
 export const maxDuration = 30;
 const TO = process.env.CONTACT_TO || ["hello", "bijay-paudel.com.np"].join("@");
 const FROM = process.env.CONTACT_FROM || "Bijay's website <website@bijay-paudel.com.np>";
-const hits = new Map<string, number[]>(); // per-IP limit: 5 messages / hour
 
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
 const ok = () => NextResponse.json({ ok: true });
@@ -30,11 +30,10 @@ export async function POST(req: Request) {
   if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !message)
     return NextResponse.json({ error: "Please fill in every field." }, { status: 400 });
 
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() || "local";
-  const now = Date.now();
-  const recent = (hits.get(ip) || []).filter((t) => now - t < 60 * 60_000);
-  if (recent.length >= 5) return NextResponse.json({ error: "Too many messages. Please try again later." }, { status: 429 });
-  hits.set(ip, [...recent, now]);
+  // 5 messages an hour per visitor, plus 50 a day for the whole site (counts kept in Neon, see lib/ratelimit.ts)
+  const who = clientKey(req);
+  if (!(await allow("contact", who, 5, 3600)) || !(await allow("contact-all", "all", 50, 86400)))
+    return NextResponse.json({ error: "Too many messages. Please try again later." }, { status: 429 });
 
   // --- backup copy ---
   let saved = false;

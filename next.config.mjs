@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 
 // Security headers (fixes: cross-site scripting defence, click-jacking defence, MIME sniffing).
-// The Content-Security-Policy lists every outside service the site really uses:
-// Google Fonts, the GitHub API and Pageclip (contact form).
+// The Content-Security-Policy lists every outside service the browser talks to: Google Fonts and the GitHub API.
+// (Email, Gemini and the database are only reached from the server, so the browser never needs them.)
 const csp = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline'" + (process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""),

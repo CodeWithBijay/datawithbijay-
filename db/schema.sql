@@ -55,3 +55,12 @@ CREATE TABLE IF NOT EXISTS raw.contact_messages (
   message  text NOT NULL,
   emailed  boolean NOT NULL DEFAULT false
 );
+
+-- Rate limits for the contact form and Tally's chat (lib/ratelimit.ts).
+-- key is a one-way hash of the visitor's address, never the address itself. Rows older than a day are deleted.
+CREATE TABLE IF NOT EXISTS ops.rate_limits (
+  bucket text        NOT NULL,
+  key    text        NOT NULL,
+  ts     timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS rate_limits_lookup ON ops.rate_limits (bucket, key, ts);
