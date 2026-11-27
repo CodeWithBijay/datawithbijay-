@@ -1,6 +1,7 @@
 # Dependabot opens a pull request when a package or GitHub Action has an update or a security fix.
 # Security fixes arrive as soon as they're published; routine updates are grouped into one weekly pull request.
-# Next.js is held on version 15 so a big upgrade never lands by surprise (remove the ignore rule when you're ready).
+# Major version jumps (Next.js 16, TypeScript 7, React 20 …) are skipped: they often need code changes, and Next.js 15
+# doesn't support TypeScript 7 yet. Do those upgrades by hand when you're ready.
 version: 2
 updates:
   - package-ecosystem: npm
@@ -15,11 +16,7 @@ updates:
       minor-and-patch:
         update-types: ["minor", "patch"]
     ignore:
-      - dependency-name: "next"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "react"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "react-dom"
+      - dependency-name: "*"
         update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
