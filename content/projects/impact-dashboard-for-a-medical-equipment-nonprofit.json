@@ -1,0 +1,24 @@
+{
+  "title": "Impact dashboard for a medical-equipment nonprofit",
+  "summary": "A nightly pipeline pulls form data through an API, loads PostgreSQL in raw, cleaned and reporting layers, and feeds a dashboard plus automatic donor reports.",
+  "types": [
+    "Data Engineering",
+    "Analytics"
+  ],
+  "tools": [
+    "Python",
+    "PostgreSQL",
+    "GitHub Actions",
+    "Jotform API",
+    "ETL"
+  ],
+  "org": "St. Louis HELP",
+  "year": 2026,
+  "status": "In progress",
+  "featured": true,
+  "links": {
+    "caseStudy": "/work/help",
+    "code": null,
+    "live": ""
+  }
+}

@@ -29,6 +29,26 @@ const securityHeaders = [
   { key: "tdm-reservation", value: "1" },
 ];
 
+// The content editor at /keystatic needs a little more: it reads and saves through the GitHub API
+// and shows GitHub profile pictures. Everything else stays locked down. It is also kept out of search engines.
+const editorCsp = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline'" + (process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""),
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' data: https://fonts.gstatic.com",
+  "img-src 'self' data: blob: https://avatars.githubusercontent.com https://raw.githubusercontent.com",
+  "connect-src 'self' https://api.github.com",
+  "form-action 'self' https://github.com",
+  "frame-ancestors 'none'",
+  "base-uri 'self'",
+  "object-src 'none'",
+].join("; ");
+const editorHeaders = [
+  ...securityHeaders.filter((h) => h.key !== "Content-Security-Policy" && h.key !== "X-Robots-Tag"),
+  { key: "Content-Security-Policy", value: editorCsp },
+  { key: "X-Robots-Tag", value: "noindex, nofollow" },
+];
+
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
@@ -40,7 +60,14 @@ const nextConfig = {
     ];
   },
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    return [
+      // the whole site, except the content editor
+      { source: "/:path((?!keystatic|api/keystatic).*)", headers: securityHeaders },
+      // the content editor (/keystatic): same protections, but it may talk to GitHub and show GitHub avatars
+      { source: "/keystatic/:path*", headers: editorHeaders },
+      { source: "/keystatic", headers: editorHeaders },
+      { source: "/api/keystatic/:path*", headers: editorHeaders },
+    ];
   },
 };
 export default nextConfig;

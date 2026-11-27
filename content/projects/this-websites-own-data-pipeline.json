@@ -1,0 +1,23 @@
+{
+  "title": "This Website’s Own Data Pipeline",
+  "summary": "Every visit is logged as a cookieless event in PostgreSQL, rolled into reporting tables each night by GitHub Actions, and shown on a public dashboard.",
+  "types": [
+    "Data Engineering"
+  ],
+  "tools": [
+    "PostgreSQL",
+    "SQL",
+    "GitHub Actions",
+    "Next.js",
+    "Data modeling"
+  ],
+  "org": "This website",
+  "year": 2026,
+  "status": "Live",
+  "featured": false,
+  "links": {
+    "caseStudy": "/work/pipeline",
+    "code": null,
+    "live": "/stats"
+  }
+}

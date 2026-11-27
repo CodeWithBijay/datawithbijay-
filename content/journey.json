@@ -1,0 +1,57 @@
+{
+  "experience": [
+    {
+      "when": "2026 — present",
+      "title": "Volunteer Data Engineer",
+      "org": "St. Louis HELP",
+      "details": "Building the nonprofit's impact dashboard: a nightly pipeline from form data through Python into PostgreSQL raw, cleaned and reporting layers, scheduled with GitHub Actions, feeding a dashboard and automatic donor reports."
+    },
+    {
+      "when": "present",
+      "title": "GSA Representative",
+      "org": "School for Professional Studies, SLU",
+      "details": "Represent graduate students, help plan programs and events, and review and vote on budgets for student organizations."
+    },
+    {
+      "when": "Apr 2025 — present",
+      "title": "PR & Marketing Coordinator",
+      "org": "Global Student Connect, SLU",
+      "details": "Plan digital campaigns and manage social channels, using Google Analytics and Hootsuite engagement data to refine content strategy."
+    },
+    {
+      "when": "Feb — Mar 2025",
+      "title": "Digital Strategy Intern",
+      "org": "Excelerate (SLU partnership)",
+      "details": "Analyzed digital marketing practices, proposed social media and SEO improvements, and presented a campaign strategy to faculty and peers."
+    }
+  ],
+  "education": [
+    {
+      "when": "expected Dec 2026",
+      "title": "M.S. in Informatics, Analytics",
+      "org": "Saint Louis University",
+      "details": "Coursework in data analytics, statistical methods and technology applications with Python, R, SQL, pandas and the tidyverse."
+    },
+    {
+      "when": "Aug 2023",
+      "title": "B.S. in Computer Information Systems",
+      "org": "Pokhara University",
+      "details": "Database management, data analysis and modeling, business statistics, systems analysis and IT project management, with a major project and an internship.",
+      "highlight": "★ Dean's List 2023"
+    }
+  ],
+  "certificates": [
+    {
+      "when": "certificate",
+      "title": "Advanced SQL Data Analysis",
+      "org": "Codecademy",
+      "details": "Professional certification in advanced SQL for data analysis."
+    },
+    {
+      "when": "certificate",
+      "title": "Computer Science Career Path",
+      "org": "Codecademy",
+      "details": "Programming, data structures and algorithms."
+    }
+  ]
+}

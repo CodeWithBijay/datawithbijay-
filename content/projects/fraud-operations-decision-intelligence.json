@@ -1,0 +1,23 @@
+{
+  "title": "Fraud Operations Decision Intelligence",
+  "summary": "Scores fraud alerts with a logistic regression model on PostgreSQL and serves a ranked queue in Streamlit, so analysts review the riskiest cases first.",
+  "types": [
+    "Analytics",
+    "Machine Learning"
+  ],
+  "tools": [
+    "Python",
+    "PostgreSQL",
+    "Logistic regression",
+    "Streamlit"
+  ],
+  "org": "Saint Louis University",
+  "year": 2026,
+  "status": "Shipped",
+  "featured": true,
+  "links": {
+    "caseStudy": "/work/fraud",
+    "code": "https://github.com/CodeWithBijay/fraud-operations-decision-intelligence",
+    "live": ""
+  }
+}

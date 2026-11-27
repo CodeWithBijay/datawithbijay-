@@ -1,17 +1,16 @@
-"use client";
-// Renders the Blueprint page and starts its behaviour once in the browser.
-// lib/site.js reads the address (/work, /blog/llm-layers, /resume …) to decide what to show.
-import { useEffect } from "react";
-import markup from "./markup";
-import init from "@/lib/site";
+// The one-page site. On the server it reads the content you edit in Keystatic (projects, blog posts, Journey)
+// and hands it to the browser as JSON; lib/site.js reads that JSON (#cms-data) to draw the cards and lists.
+import SiteClient from "./SiteClient";
+import { siteData } from "@/lib/content";
 
-let started = false;
-
-export default function Site() {
-  useEffect(() => {
-    if (started) return; // React dev mode runs effects twice; start only once
-    started = true;
-    init();
-  }, []);
-  return <div id="site" dangerouslySetInnerHTML={{ __html: markup }} />;
+export default async function Site() {
+  const data = await siteData();
+  // "<" is escaped so text inside the content can never close the script tag
+  const json = JSON.stringify(data).replace(/</g, "\\u003c");
+  return (
+    <>
+      <script id="cms-data" type="application/json" dangerouslySetInnerHTML={{ __html: json }} />
+      <SiteClient />
+    </>
+  );
 }

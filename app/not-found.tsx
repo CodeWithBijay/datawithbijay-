@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import "./globals.css";
 
 // Blueprint-style 404: shown for any address that doesn't exist.
 export const metadata: Metadata = { title: "Sheet not found · Bijay Paudel", robots: { index: false } };
