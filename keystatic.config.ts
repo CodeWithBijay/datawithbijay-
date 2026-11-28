@@ -94,6 +94,29 @@ export default config({
         }),
       },
     }),
+
+    // News ticker under the hero: one line per LinkedIn post (or anything else worth announcing)
+    updates: collection({
+      label: "News ticker",
+      path: "content/updates/*",
+      slugField: "headline",
+      format: "json",
+      columns: ["headline", "date"],
+      schema: {
+        headline: fields.slug({
+          name: { label: "Headline", description: "One short line, like a news headline. Shown in the moving bar under the top of the home page.", validation: { isRequired: true, length: { max: 110 } } },
+          slug: { label: "File name", description: "Made from the headline automatically." },
+        }),
+        link: fields.url({ label: "Link", description: "Paste the LinkedIn post link (••• on the post → Copy link to post).", validation: { isRequired: true } }),
+        source: fields.select({
+          label: "Where it was posted",
+          options: [{ label: "LinkedIn", value: "linkedin" }, { label: "GitHub", value: "github" }, { label: "Other", value: "other" }],
+          defaultValue: "linkedin",
+        }),
+        date: fields.date({ label: "Date", defaultValue: { kind: "today" }, validation: { isRequired: true } }),
+        hidden: fields.checkbox({ label: "Hide from the ticker", defaultValue: false }),
+      },
+    }),
   },
 
   singletons: {

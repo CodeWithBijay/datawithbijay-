@@ -58,8 +58,21 @@ export async function getJourney(): Promise<Journey> {
   return { experience: m(j?.experience), education: m(j?.education), certificates: m(j?.certificates) };
 }
 
+export type Update = { headline: string; link: string; source: string; date: string };
+
+/** News ticker: your LinkedIn updates plus your newest blog posts, newest first (max 12). */
+export async function getUpdates(posts?: PostCard[]): Promise<Update[]> {
+  const all = await reader.collections.updates.all();
+  const items: Update[] = all
+    .filter(({ entry: e }) => !e.hidden && e.link)
+    .map(({ entry: e }) => ({ headline: e.headline, link: e.link as string, source: e.source, date: e.date ?? "" }));
+  for (const p of (posts ?? (await getPosts())).slice(0, 3)) items.push({ headline: p.title, link: `/writing/${p.slug}`, source: "blog", date: p.date });
+  return items.sort((a, b) => b.date.localeCompare(a.date)).slice(0, 12);
+}
+
 /** Everything the one-page site needs, handed to the browser as JSON. */
 export async function siteData() {
   const [projects, posts, journey] = await Promise.all([getProjects(), getPosts(), getJourney()]);
-  return { projects, posts, journey };
+  const updates = await getUpdates(posts);
+  return { projects, posts, journey, updates };
 }
